@@ -1,0 +1,303 @@
+import java.util.*;
+import java.io.*;
+import java_cup.runtime.*;
+import Model.*;
+
+
+Parser code {:
+    // Connect this Parser to a scanner!
+
+                    private Yylex lexer;
+                    private File file;
+
+                    	 public Parser( File file ) {
+                    	 this();
+                    		this.file = file;
+                    		try {
+                    			lexer = new Yylex( new FileReader( file ) );
+                    			}
+                    		catch ( IOException exception ) {
+                    			throw new Error( "No" );
+                    			}
+                    		}
+
+:}
+
+scan with {: return lexer.yylex(); :};
+
+//list of terminals
+terminal CLASS, INT, BOOL, DOUBLE, STRING, EXTENDS, VOID, INTERFACE, NULL, THIS, IMPLEMENTS, FOR, WHILE, IF, ELSE, RETURN, BREAK, NEW, NEWARRAY, PRINT, READINTEGER, READLINE, MINUS, PLUS, MULL, DIV, PERCENT, LESS, BIGGER, EXCLAMATION, SEMI, COMMA, DOT, ASSIGN, LEFTPAREN, RIGHTPAREN, OPENBRACKET, CLOSEBRACKET, OPENAC, CLOSEAC, BIGEQUAL, LESSEQUAL, EQUALS, NOTEQUALS, AND, OR, BRACKETS;
+terminal String T_ID, T_STRINGLITERAL;
+terminal Integer T_INTLITERAL;
+terminal Double T_DOUBLELITERAL;
+terminal Boolean T_BOOLEANLITERAL  ;
+
+//list of non terminals
+non terminal Initial, Program, Decl, VariableDecl, Variable, Type, FunctionDecl, Formals, ClassDecl, Feild, InterfaceDecl, StmtBlock, Stmt, WhileStmt, ForStmt, ReturnStmt, BreakStmt, PrintStmt, Expr, Lvalue, Call, Actuals, Constants, Fields, Temp3, VarDecls, Stmts, Exprs, Pars, Temp8, Temp9, ExprOrNot, If_then_statement, If_then_else_statement, Statement_no_short_if, If_then_else_statement_no_short_if, While_statement_no_short_if,For_statement_no_short_if, TempFormals;
+
+
+//precedence of operators
+precedence left LEFTPAREN;
+precedence left DOT, OPENBRACKET;
+precedence left EXCLAMATION;
+precedence left MULL, DIV, PERCENT;
+precedence left PLUS, MINUS;
+precedence left LESS, LESSEQUAL, BIGGER, BIGEQUAL;
+precedence left EQUALS, NOTEQUALS;
+precedence left AND;
+precedence left OR;
+precedence left ASSIGN;
+
+start with Initial;
+
+Initial      ::= Program:p {:
+							Initial initial=new Initial(p);
+
+							System.out.println("Yes"); done_parsing(); 
+
+						:};
+
+Program      ::= Decl:d {:
+                        RESULT=new ArrayList<Decl>();
+                        RESULT.add(d);
+                    :}
+                    |
+                 Program:p Decl:d {:
+                        RESULT=p;
+                        RESULT.add(d);
+                    :};
+
+Decl         ::= VariableDecl:d {:
+                        RESULT=d;
+                    :} |
+                 FunctionDecl:d {:
+                        RESULT=d;
+                    :} |
+                 ClassDecl:d {:
+                        RESULT=d;
+                    :};
+
+VariableDecl ::= Variable:v SEMI {:
+                        RESULT=v;
+                    :};
+
+Variable     ::= Type:t T_ID:i {:
+                        RESULT=new VariableDecl(t,new Identifer(i));
+                    :};
+
+Type         ::= INT {:
+                        RESULT=Type.intType;
+                    :} |
+                 DOUBLE {:
+                        RESULT=Type.doubleType;
+                    :} |
+                 BOOL {:
+                        RESULT=Type.boolType;
+                    :} |
+                 STRING {:
+                        RESULT=Type.stringType;
+                    :} |
+                 T_ID:i {:
+                        RESULT=new ClassType(new Identifier(i));
+                    :} |
+                 Type:t BRACKETS {:
+                        RESULT=new ArrayType(t);
+                    :};
+
+FunctionDecl ::= Type:t T_ID:i LEFTPAREN Formals:f RIGHTPAREN StmtBlock:s {:
+                        RESULT=new FunctionDecl(t,new Identifier(i),f,s);
+                    :} |
+                 VOID T_ID LEFTPAREN Formals RIGHTPAREN StmtBlock {:
+                        RESULT=new FunctionDecl(Type.voidType,new Identifier(i),f,s);
+                    :};
+
+Formals          ::= TempFormals:f {:
+                            RESULT=f;
+                        :} |
+                            {:
+                            RESULT=new ArrayList<VariableDecl>();
+                        :};
+
+TempFormals      ::=  Variable:v {:
+                        RESULT=new ArrayList<VariableDecl>();
+                        RESULT.add(v);
+                    :} |
+                  TempFormals:f COMMA Variable:v {:
+                        RESULT=f;
+                        RESULT.add(v);
+                    :};
+
+ClassDecl    ::= CLASS T_ID:i Pars:p OPENAC Fields:f CLOSEAC {:
+                        RESULT=new ClassDecl(new Identifier(i),p,f);
+                    :};
+
+Pars         ::= EXTENDS T_ID:i {:
+                        RESULT=new ClassType(new Identifier(i));
+                    :} |
+                    {:
+                        RESULT=null;
+                    :};
+
+Fields        ::= Fields:f Feild:x {:
+                        RESULT=f;
+                        RESULT.add(x);
+                    :} |
+                    {:
+                        RESULT=new ArrayList<Decl>();
+                    :}
+                 ;
+
+Feild        ::= VariableDecl:d {:
+                    RESULT=d;
+                    :} |
+                 FunctionDecl:d {:
+                    RESULT=d;
+                 :};
+
+StmtBlock    ::= OPENAC VarDecls:v Stmts:s CLOSEAC {:
+                    RESULT=new StmtBlock(v,s);
+                 :};
+
+VarDecls        ::= VarDecls:v VariableDecl:x {:
+                    RESULT=v;
+                    RESULT.add(x);
+                 :} |
+                 {:
+                    RESULT=new Arraylist<VariableDecl>();
+                 :};
+
+Stmts        ::=  Stmts:s Stmt:x {:
+                    RESULT=s;
+                    RESULT.add(x);
+                 :} |
+                 {:
+                    RESULT=new ArrayList<Stmt>();
+                 :};
+
+Stmt         ::= Expr:e SEMI {:
+                    RESULT=e;
+                 :} |
+                 SEMI {:
+                    RESULT=new Stmt();
+                 :} |
+                 WhileStmt:s {:
+                    RESULT=s;
+                 :} |
+                 If_then_statement:s {:
+                    RESULT=s;
+                 :} |
+                 If_then_else_statement:s {:
+                    RESULT=s;
+                 :}
+                 ForStmt:s {:
+                    RESULT=s;
+                 :} |
+                 BreakStmt:s {:
+                    RESULT=s;
+                 :} |
+                 ReturnStmt:s {:
+                    RESULT=s;
+                 :} |
+                 PrintStmt:s {:
+                    RESULT=s;
+                 :} |
+                 StmtBlock:s {:
+                    RESULT=s;
+                 :}
+                 ;
+
+Statement_no_short_if ::=   Expr:e SEMI {:
+                                RESULT=e;
+                            :} |
+                            SEMI {:
+                                RESULT=new Stmt();
+                            :} |
+                            While_statement_no_short_if |
+                            If_then_else_statement_no_short_if |
+                            For_statement_no_short_if |
+                            BreakStmt |
+                            ReturnStmt |
+                            PrintStmt |
+                            StmtBlock
+                            ;
+
+
+If_then_statement ::=IF LEFTPAREN Expr RIGHTPAREN Stmt;
+
+If_then_else_statement ::= IF LEFTPAREN Expr RIGHTPAREN Statement_no_short_if ELSE Stmt;
+
+If_then_else_statement_no_short_if ::=
+    		IF LEFTPAREN Expr RIGHTPAREN Statement_no_short_if
+    			ELSE Statement_no_short_if;
+
+While_statement_no_short_if ::=WHILE LEFTPAREN Expr RIGHTPAREN Statement_no_short_if;
+
+For_statement_no_short_if ::=
+		FOR LEFTPAREN ExprOrNot SEMI Expr SEMI
+			ExprOrNot RIGHTPAREN Statement_no_short_if
+	;
+
+
+WhileStmt    ::= WHILE LEFTPAREN Expr RIGHTPAREN Stmt;
+
+ForStmt      ::= FOR LEFTPAREN ExprOrNot SEMI Expr SEMI ExprOrNot RIGHTPAREN Stmt;
+
+ExprOrNot       ::= Expr |
+                ;
+
+ReturnStmt   ::= RETURN ExprOrNot SEMI;
+
+BreakStmt    ::= BREAK SEMI;
+
+PrintStmt    ::= PRINT LEFTPAREN Exprs RIGHTPAREN SEMI;
+
+Exprs        ::=  Expr |
+                  Exprs COMMA Expr
+                   ;
+
+Expr         ::= Lvalue ASSIGN Expr |
+                 Constants |
+                 Lvalue |
+                 THIS |
+                 Call |
+                 LEFTPAREN Expr RIGHTPAREN |
+                 Expr PLUS Expr |
+                 Expr MINUS Expr |
+                 Expr MULL Expr |
+                 Expr DIV Expr |
+                 Expr PERCENT Expr |
+                 MINUS Expr |
+                 Expr LESS Expr |
+                 Expr LESSEQUAL Expr |
+                 Expr BIGGER Expr |
+                 Expr BIGEQUAL Expr |
+                 Expr EQUALS Expr |
+                 Expr NOTEQUALS Expr |
+                 Expr AND Expr |
+                 Expr OR Expr |
+                 EXCLAMATION Expr |
+                 READINTEGER LEFTPAREN RIGHTPAREN |
+                 READLINE LEFTPAREN RIGHTPAREN |
+                 NEW T_ID |
+                 NEWARRAY LEFTPAREN Expr COMMA Type RIGHTPAREN
+                 ;
+
+Lvalue       ::= T_ID |
+                 Expr DOT T_ID |
+                 Expr OPENBRACKET Expr CLOSEBRACKET
+                 ;
+
+Call         ::= T_ID LEFTPAREN Actuals RIGHTPAREN |
+                 Expr DOT T_ID LEFTPAREN Actuals RIGHTPAREN
+                 ;
+
+Actuals      ::= Exprs |
+                 ;
+
+Constants    ::= T_INTLITERAL |
+                 T_DOUBLELITERAL |
+                 T_BOOLEANLITERAL |
+                 T_STRINGLITERAL |
+                 NULL
+                 ;
+
