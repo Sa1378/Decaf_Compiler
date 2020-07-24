@@ -33,7 +33,36 @@ terminal Double T_DOUBLELITERAL;
 terminal Boolean T_BOOLEANLITERAL  ;
 
 //list of non terminals
-non terminal Initial, Program, Decl, VariableDecl, Variable, Type, FunctionDecl, Formals, ClassDecl, Feild, InterfaceDecl, StmtBlock, Stmt, WhileStmt, ForStmt, ReturnStmt, BreakStmt, PrintStmt, Expr, Lvalue, Call, Actuals, Constants, Fields, Temp3, VarDecls, Stmts, Exprs, Pars, Temp8, Temp9, ExprOrNot, If_then_statement, If_then_else_statement, Statement_no_short_if, If_then_else_statement_no_short_if, While_statement_no_short_if,For_statement_no_short_if, TempFormals;
+non terminal Initial Initial;
+non terminal ArrayList<Decl> Program;
+non terminal Decl Decl;
+non terminal VariableDecl VariableDecl,Variable;
+non terminal Type Type;
+non terminal FunctionDecl FunctionDecl;
+non terminal ArrayList<VariableDecl> Formals,TempFormals;
+non terminal ClassDecl ClassDecl;
+non terminal ClassType Pars;
+non terminal Decl Feild;
+non terminal ArrayList<Decl> Fields;
+non terminal StmtBlock StmtBlock;
+non terminal ArrayList<VariableDecls> VarDecls;
+non terminal ArrayList<Stmt> Stmts;
+non terminal Stmt Stmt;
+non terminal WhileStmt WhileStmt;
+non terminal ForStmt ForStmt;
+non terminal ReturnStmt ReturnStmt;
+non terminal BreakStmt BreakStmt;
+non terminal PrintStmt PrintStmt;
+non terminal Expr Expr;
+non terminal Lvalue Lvalue;
+non terminal Call Call;
+non terminal ArrayList<Expr> Actuals;
+non terminal Constant Constants;
+non terminal ArrayList<Expr> Exprs;
+non terminal Expr ExprOrNot;
+non terminal IfStmt If_then_statement, If_then_else_statement, Statement_no_short_if, If_then_else_statement_no_short_if;
+non terminal WhileStmt While_statement_no_short_if;
+non terminal ForStmt For_statement_no_short_if;
 
 
 //precedence of operators
@@ -212,92 +241,204 @@ Statement_no_short_if ::=   Expr:e SEMI {:
                             SEMI {:
                                 RESULT=new Stmt();
                             :} |
-                            While_statement_no_short_if |
-                            If_then_else_statement_no_short_if |
-                            For_statement_no_short_if |
-                            BreakStmt |
-                            ReturnStmt |
-                            PrintStmt |
-                            StmtBlock
+                            While_statement_no_short_if:s {:
+                                RESULT=s;
+                            :} |
+                            If_then_else_statement_no_short_if:s {:
+                                RESULT=s;
+                            :} |
+                            For_statement_no_short_if:s {:
+                                RESULT=s;
+                            :} |
+                            BreakStmt:s {:
+                                RESULT=s;
+                            :} |
+                            ReturnStmt:s {:
+                                RESULT=s;
+                            :} |
+                            PrintStmt:s {:
+                                RESULT=s;
+                            :} |
+                            StmtBlock {:
+                                RESULT=s;
+                            :}
                             ;
 
 
-If_then_statement ::=IF LEFTPAREN Expr RIGHTPAREN Stmt;
+If_then_statement ::=   IF LEFTPAREN Expr:e RIGHTPAREN Stmt:s {:
+                            RESULT=new IfStmt(e,s);
+                        :};
 
-If_then_else_statement ::= IF LEFTPAREN Expr RIGHTPAREN Statement_no_short_if ELSE Stmt;
+If_then_else_statement ::= IF LEFTPAREN Expr:e RIGHTPAREN Statement_no_short_if:s ELSE Stmt:r {:
+                            RESULT=new IfStmt(e,s,r);
+                        :};
 
 If_then_else_statement_no_short_if ::=
-    		IF LEFTPAREN Expr RIGHTPAREN Statement_no_short_if
-    			ELSE Statement_no_short_if;
+    		IF LEFTPAREN Expr:e RIGHTPAREN Statement_no_short_if:s
+    			ELSE Statement_no_short_if:r {:
+    			    RESULT=new IfStmt(e,s,r);
+    			:};
 
-While_statement_no_short_if ::=WHILE LEFTPAREN Expr RIGHTPAREN Statement_no_short_if;
+While_statement_no_short_if ::= WHILE LEFTPAREN Expr:e RIGHTPAREN Statement_no_short_if:s {:
+                                    RESULT=new WhileStmt(e,s);
+                                :};
 
 For_statement_no_short_if ::=
-		FOR LEFTPAREN ExprOrNot SEMI Expr SEMI
-			ExprOrNot RIGHTPAREN Statement_no_short_if
-	;
+		FOR LEFTPAREN ExprOrNot:x SEMI Expr:e SEMI
+			ExprOrNot:y RIGHTPAREN Statement_no_short_if:s {:
+			    RESULT=new ForStmt(x,e,y,s);
+			:};
 
 
-WhileStmt    ::= WHILE LEFTPAREN Expr RIGHTPAREN Stmt;
+WhileStmt    ::= WHILE LEFTPAREN Expr:e RIGHTPAREN Stmt:s {:
+                    RESULT=new WhileStmt(e,s);
+                 :};
 
-ForStmt      ::= FOR LEFTPAREN ExprOrNot SEMI Expr SEMI ExprOrNot RIGHTPAREN Stmt;
+ForStmt      ::=    FOR LEFTPAREN ExprOrNot:x SEMI Expr:e SEMI ExprOrNot:y RIGHTPAREN Stmt:s {:
+                        RESULT=new ForStmt(x,e,y,s);
+                    :};
 
-ExprOrNot       ::= Expr |
-                ;
+ExprOrNot       ::= Expr:e {:
+                        RESULT=e;
+                    :} |
+                    {:
+                        RESULT=null;
+                    :};
 
-ReturnStmt   ::= RETURN ExprOrNot SEMI;
+ReturnStmt   ::=    RETURN ExprOrNot:e SEMI {:
+                        RESULT=new ReturnStmt(e);
+                    :};
 
-BreakStmt    ::= BREAK SEMI;
+BreakStmt    ::=    BREAK SEMI {:
+                        RESULT=new BreakStmt();
+                    :};
 
-PrintStmt    ::= PRINT LEFTPAREN Exprs RIGHTPAREN SEMI;
+PrintStmt    ::=    PRINT LEFTPAREN Exprs:e RIGHTPAREN SEMI {:
+                        RESULT=new PrintStmt(e);
+                    :};
 
-Exprs        ::=  Expr |
-                  Exprs COMMA Expr
-                   ;
+Exprs        ::=    Expr:e {:
+                        RESULT=new ArrayList<Expr>();
+                        RESULT.add(e);
+                    :} |
+                    Exprs:x COMMA Expr:e {:
+                        RESULT=x;
+                        RESULT.add(e);
+                    :};
 
-Expr         ::= Lvalue ASSIGN Expr |
-                 Constants |
-                 Lvalue |
-                 THIS |
-                 Call |
-                 LEFTPAREN Expr RIGHTPAREN |
-                 Expr PLUS Expr |
-                 Expr MINUS Expr |
-                 Expr MULL Expr |
-                 Expr DIV Expr |
-                 Expr PERCENT Expr |
-                 MINUS Expr |
-                 Expr LESS Expr |
-                 Expr LESSEQUAL Expr |
-                 Expr BIGGER Expr |
-                 Expr BIGEQUAL Expr |
-                 Expr EQUALS Expr |
-                 Expr NOTEQUALS Expr |
-                 Expr AND Expr |
-                 Expr OR Expr |
-                 EXCLAMATION Expr |
-                 READINTEGER LEFTPAREN RIGHTPAREN |
-                 READLINE LEFTPAREN RIGHTPAREN |
-                 NEW T_ID |
-                 NEWARRAY LEFTPAREN Expr COMMA Type RIGHTPAREN
-                 ;
+Expr         ::=    Lvalue:l ASSIGN Expr:e {:
+                        RESULT=new Expr(l,e,new Operator("="));
+                    :} |
+                    Constants:c {:
+                        RESULT=c;
+                    :} |
+                    Lvalue:l {:
+                        RESULT=l;
+                    :} |
+                    THIS {:
+                        RESULT=new This();
+                    :} |
+                    Call:c {:
+                        RESULT=c;
+                    :} |
+                    LEFTPAREN Expr:e RIGHTPAREN {:
+                        RESULT=e;
+                    :} |
+                    Expr:x PLUS Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("+");
+                    :} |
+                    Expr:x MINUS Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("-");
+                    :} |
+                    Expr:x MULL Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("*");
+                    :} |
+                    Expr:x DIV Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("/");
+                    :} |
+                    Expr:x PERCENT Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("%");
+                    :} |
+                    MINUS Expr:x {:
+                        RESULT=new Expr(x,new Operator("-"));
+                    :} |
+                    Expr:x LESS Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("<");
+                    :} |
+                    Expr:x LESSEQUAL Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("<=");
+                    :} |
+                    Expr:x BIGGER Expr:y {:
+                        RESULT=new Expr(x,y,new Operator(">");
+                    :} |
+                    Expr:x BIGEQUAL Expr:y {:
+                        RESULT=new Expr(x,y,new Operator(">=");
+                    :} |
+                    Expr:x EQUALS Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("==");
+                    :} |
+                    Expr:x NOTEQUALS Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("!=");
+                    :} |
+                    Expr:x AND Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("&&");
+                    :} |
+                    Expr:x OR Expr:y {:
+                        RESULT=new Expr(x,y,new Operator("||");
+                    :} |
+                    EXCLAMATION Expr:x {:
+                        RESULT=new Expr(x,new Operator("!"));
+                    :} |
+                    READINTEGER LEFTPAREN RIGHTPAREN {:
+                        RESULT=new ReadIntegerExpr();
+                    :} |
+                    READLINE LEFTPAREN RIGHTPAREN {:
+                        RESULT=new ReadLineExpr();
+                    :} |
+                    NEW T_ID:i {:
+                        RESULT=new NewExpr(new ClassType(new Identifier(i)));
+                    :} |
+                    NEWARRAY LEFTPAREN Expr:e COMMA Type:t RIGHTPAREN {:
+                        RESULT=new NewArrayExpr(e,t);
+                    :};
 
-Lvalue       ::= T_ID |
-                 Expr DOT T_ID |
-                 Expr OPENBRACKET Expr CLOSEBRACKET
-                 ;
+Lvalue       ::=    T_ID:i {:
+                        RESULT=new FieldValue(null,new Identifier(i));
+                    :} |
+                    Expr:e DOT T_ID:i {:
+                        RESULT=new FieldValue(e,new Identifier(i));
+                    :} |
+                    Expr:e OPENBRACKET Expr:x CLOSEBRACKET {:
+                        RESULT=new ArrayValue(e,x);
+                    :};
 
-Call         ::= T_ID LEFTPAREN Actuals RIGHTPAREN |
-                 Expr DOT T_ID LEFTPAREN Actuals RIGHTPAREN
-                 ;
+Call         ::=    T_ID:i LEFTPAREN Actuals:a RIGHTPAREN {:
+                        RESULT=new Call(null,new Identifier(i),a);
+                    :} |
+                    Expr:e DOT T_ID:i LEFTPAREN Actuals:a RIGHTPAREN {:
+                        RESULT=new Call(e,new Identifier(i),a);
+                    :};
 
-Actuals      ::= Exprs |
-                 ;
+Actuals      ::=    Exprs:e {:
+                        RESULT=e;
+                    :} |
+                    {:
+                        RESULT=new ArrayList<Expr>();
+                    :};
 
-Constants    ::= T_INTLITERAL |
-                 T_DOUBLELITERAL |
-                 T_BOOLEANLITERAL |
-                 T_STRINGLITERAL |
-                 NULL
-                 ;
+Constants    ::=    T_INTLITERAL:c {:
+                        RESULT=new IntConstant(c);
+                    :} |
+                    T_DOUBLELITERAL:c {:
+                        RESULT=new DoubleConstant(c);
+                    :} |
+                    T_BOOLEANLITERAL:c {:
+                        RESULT=new BoolConstant(c);
+                    :} |
+                    T_STRINGLITERAL:c {:
+                        RESULT=new StringConstant(c);
+                    :} |
+                    NULL {:
+                        RESULT=new NullConstant();
+                    :};
 
