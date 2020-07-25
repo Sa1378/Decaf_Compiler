@@ -209,7 +209,7 @@ Stmt         ::= Expr:e SEMI {:
                     RESULT=e;
                  :} |
                  SEMI {:
-                    RESULT=new Stmt();
+                    RESULT=null;
                  :} |
                  WhileStmt:s {:
                     RESULT=s;
@@ -241,7 +241,7 @@ Statement_no_short_if ::=   Expr:e SEMI {:
                                 RESULT=e;
                             :} |
                             SEMI {:
-                                RESULT=new Stmt();
+                                RESULT=null;
                             :} |
                             While_statement_no_short_if:s {:
                                 RESULT=s;
@@ -329,7 +329,7 @@ Exprs        ::=    Expr:e {:
                     :};
 
 Expr         ::=    Lvalue:l ASSIGN Expr:e {:
-                        RESULT=new Expr(l,e,new Operator("="));
+                        RESULT=new ArithmeticExpr(l,e,new Operator("="));
                     :} |
                     Constants:c {:
                         RESULT=c;
@@ -347,49 +347,49 @@ Expr         ::=    Lvalue:l ASSIGN Expr:e {:
                         RESULT=e;
                     :} |
                     Expr:x PLUS Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("+");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("+");
                     :} |
                     Expr:x MINUS Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("-");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("-");
                     :} |
                     Expr:x MULL Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("*");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("*");
                     :} |
                     Expr:x DIV Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("/");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("/");
                     :} |
                     Expr:x PERCENT Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("%");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("%");
                     :} |
                     MINUS Expr:x {:
-                        RESULT=new Expr(x,new Operator("-"));
+                        RESULT=new ArithmeticExpr(x,new Operator("-"));
                     :} |
                     Expr:x LESS Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("<");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("<");
                     :} |
                     Expr:x LESSEQUAL Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("<=");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("<=");
                     :} |
                     Expr:x BIGGER Expr:y {:
-                        RESULT=new Expr(x,y,new Operator(">");
+                        RESULT=new ArithmeticExpr(x,y,new Operator(">");
                     :} |
                     Expr:x BIGEQUAL Expr:y {:
-                        RESULT=new Expr(x,y,new Operator(">=");
+                        RESULT=new ArithmeticExpr(x,y,new Operator(">=");
                     :} |
                     Expr:x EQUALS Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("==");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("==");
                     :} |
                     Expr:x NOTEQUALS Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("!=");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("!=");
                     :} |
                     Expr:x AND Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("&&");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("&&");
                     :} |
                     Expr:x OR Expr:y {:
-                        RESULT=new Expr(x,y,new Operator("||");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("||");
                     :} |
                     EXCLAMATION Expr:x {:
-                        RESULT=new Expr(x,new Operator("!"));
+                        RESULT=new ArithmeticExpr(x,new Operator("!"));
                     :} |
                     READINTEGER LEFTPAREN RIGHTPAREN {:
                         RESULT=new ReadIntegerExpr();
