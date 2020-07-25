@@ -1,4 +1,7 @@
 package Model;
 
-public class Decl {
+abstract public class Decl {
+
+    abstract public void cgen(Cgen cgen);
+
 }
