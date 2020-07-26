@@ -28,7 +28,7 @@ public class Initial {
         for (VariableDecl variableDecl : varDecls)
             cgen.varTable.get(0).put(variableDecl.identifier, variableDecl);
         for (FunctionDecl functionDecl : funcDecls)
-            cgen.funcTable.put(functionDecl.identifier, functionDecl);
+            cgen.funcTable.get(0).put(functionDecl.identifier, functionDecl);
         for (ClassDecl classDecl : classDecls)
             cgen.classTable.put(classDecl.identifier, classDecl);
         for (ClassDecl classDecl : classDecls)

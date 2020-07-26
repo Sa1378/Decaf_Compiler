@@ -1,5 +1,4 @@
 package Model;
 
-public class Expr extends Stmt {
-
+abstract public class Expr extends Stmt {
 }

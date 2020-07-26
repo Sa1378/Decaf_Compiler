@@ -1,6 +1,7 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ClassDecl extends Decl {
     Identifier identifier;
@@ -56,7 +57,24 @@ public class ClassDecl extends Decl {
 
     @Override
     public void cgen(Cgen cgen) {
-
+        cgen.funcTable.add(new HashMap<>());
+        cgen.addScope();
+        for (FunctionDecl method:methods){
+            cgen.funcTable.get(1).put(method.identifier,method);
+            method.parClass = new ClassType(identifier);
+        }
+        int ptr = 0;
+        for (VariableDecl field: fields){
+            cgen.topScope().put(field.identifier,field);
+            ptr += 4;
+            field.location = ptr;
+            field.isField = true;
+        }
+        for (FunctionDecl method:methods){
+            method.cgen(cgen);
+        }
+        cgen.popScope();
+        cgen.funcTable.remove(1);
     }
 
     public void addVtable(Cgen cgen) {

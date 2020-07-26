@@ -15,4 +15,9 @@ public class ArithmeticExpr extends Expr {
         this.firstOperand = operand;
         this.operator = operator;
     }
+
+    @Override
+    protected void cgen(Cgen cgen) {
+
+    }
 }
