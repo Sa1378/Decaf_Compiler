@@ -11,6 +11,7 @@ public class Cgen {
     ArrayList<String> code = new ArrayList<>();
     int currBytes = 0;
     int stackOffset = -4;
+    int labelCnt = 0;
 
     public Cgen() {
         varTable.add(new HashMap<>());
@@ -45,5 +46,9 @@ public class Cgen {
 
     public void popScope() {
         varTable.remove(varTable.size() - 1);
+    }
+
+    public String newLabel() {
+        return String.format("NiceLabelYouHaveThere%d", labelCnt);
     }
 }

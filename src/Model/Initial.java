@@ -25,8 +25,10 @@ public class Initial {
 
     public void cgen() {
         Cgen cgen = new Cgen();
-        for (VariableDecl variableDecl : varDecls)
+        for (VariableDecl variableDecl : varDecls) {
+            variableDecl.varType=VarType.GLOBAL;
             cgen.varTable.get(0).put(variableDecl.identifier, variableDecl);
+        }
         for (FunctionDecl functionDecl : funcDecls)
             cgen.funcTable.get(0).put(functionDecl.identifier, functionDecl);
         for (ClassDecl classDecl : classDecls)

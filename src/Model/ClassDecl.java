@@ -68,7 +68,7 @@ public class ClassDecl extends Decl {
             cgen.topScope().put(field.identifier,field);
             ptr += 4;
             field.location = ptr;
-            field.isField = true;
+            field.varType = VarType.FIELD;
         }
         for (FunctionDecl method:methods){
             method.cgen(cgen);
@@ -80,7 +80,7 @@ public class ClassDecl extends Decl {
     public void addVtable(Cgen cgen) {
         cgen.addData("ClassVtable_"+identifier.name+":");
         for(int i=0;i<methods.size();i++)
-            cgen.addCode(".word"+methods.get(i).location);
+            cgen.addCode(".word"+methods.get(i).location); //TODO
     }
 
 }

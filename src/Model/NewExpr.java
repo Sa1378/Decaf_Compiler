@@ -6,4 +6,9 @@ public class NewExpr extends Expr {
     public NewExpr(ClassType type){
         this.type=type;
     }
+
+    @Override
+    protected void cgen(Cgen cgen) {
+
+    }
 }

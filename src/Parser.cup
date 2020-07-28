@@ -209,7 +209,7 @@ Stmt         ::= Expr:e SEMI {:
                     RESULT=e;
                  :} |
                  SEMI {:
-                    RESULT=null;
+                    RESULT=new NullStmt();
                  :} |
                  WhileStmt:s {:
                     RESULT=s;
@@ -241,7 +241,7 @@ Statement_no_short_if ::=   Expr:e SEMI {:
                                 RESULT=e;
                             :} |
                             SEMI {:
-                                RESULT=null;
+                                RESULT=new NullStmt();
                             :} |
                             While_statement_no_short_if:s {:
                                 RESULT=s;
