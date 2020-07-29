@@ -4,7 +4,9 @@
       <w>cgen</w>
       <w>decl</w>
       <w>decls</w>
+      <w>movt</w>
       <w>vtable</w>
+      <w>xori</w>
     </words>
   </dictionary>
 </component>
