@@ -24,7 +24,7 @@ public class ArithmeticExpr extends Expr {
             switch (operator.operatorString) {
                 case "!":
                     if (firstOperand.variableDecl.type != Type.boolType) {
-                        System.out.println("ArithmeticExpr ERROR! - ! Operation");
+                        System.out.println("ArithmeticExpr ERROR!  ! Operation");
                     }
                     cgen.addCode("xori $t2,$t0,1");
                     this.variableDecl = new VariableDecl(Type.boolType);
@@ -35,23 +35,231 @@ public class ArithmeticExpr extends Expr {
                         cgen.addCode("mtc1 $zero,$f1");
                         cgen.addCode("sub.s $f2,$f1,$f0");
                         cgen.addCode("mfc1 $t2,$f2");
-                        this.variableDecl=new VariableDecl(Type.doubleType);
+                        this.variableDecl = new VariableDecl(Type.doubleType);
                     } else if (firstOperand.variableDecl.type == Type.intType) {
                         cgen.addCode("sub $t2,$zero,$t0");
-                        this.variableDecl=new VariableDecl(Type.intType);
+                        this.variableDecl = new VariableDecl(Type.intType);
                     } else {
-                        System.out.println("ArithmeticExpr ERROR! - - Operation");
+                        System.out.println("ArithmeticExpr ERROR!  - Operation");
                     }
-
+                    break;
+                default:
+                    System.out.println("ArithmeticExpr ERROR!  WTH is this operand");
+                    break;
 
             }
         } else {
             secondOperand.cgen(cgen);
             cgen.addCode(String.format("lw $t1,%d($fp)", secondOperand.variableDecl.location));
+            switch (operator.operatorString) {
+                case "+":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  + Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("add.s $f2,$f0,$f1");
+                        cgen.addCode("mfc1 $t2,$f2");
+                        this.variableDecl = new VariableDecl(Type.doubleType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("add $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.intType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  + Operation");
+                    }
+                    break;
+                case "-":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  - Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("sub.s $f2,$f0,$f1");
+                        cgen.addCode("mfc1 $t2,$f2");
+                        this.variableDecl = new VariableDecl(Type.doubleType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("sub $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.intType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  - Operation");
+                    }
+                    break;
+                case "*":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  * Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("mul.s $f2,$f0,$f1");
+                        cgen.addCode("mfc1 $t2,$f2");
+                        this.variableDecl = new VariableDecl(Type.doubleType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("mul $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.intType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  * Operation");
+                    }
+                    break;
+                case "/":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  / Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("div.s $f2,$f0,$f1");
+                        cgen.addCode("mfc1 $t2,$f2");
+                        this.variableDecl = new VariableDecl(Type.doubleType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("div $t0,$t1");
+                        cgen.addCode("mflo $t2");
+                        this.variableDecl = new VariableDecl(Type.intType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  / Operation");
+                    }
+                    break;
+                case "%":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  % Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("div.s $f2,$f0,$f1");
+                        cgen.addCode("round.w.s $f3,$f2");
+                        cgen.addCode("mul.s $f4,$f3,$f1");
+                        cgen.addCode("sub.s $f5,$f0,$f4");
+                        cgen.addCode("mfc1 $t2,$f5");
+                        this.variableDecl = new VariableDecl(Type.doubleType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("div $t0,$t1");
+                        cgen.addCode("mfhi $t2");
+                        this.variableDecl = new VariableDecl(Type.intType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  % Operation");
+                    }
+                    break;
+                case "<":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  < Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("c.lt.s $f0,$f1");
+                        cgen.addCode("li $t2,0");
+                        cgen.addCode("li $t3,1");
+                        cgen.addCode("movt $t2,$t3,$fcc0");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("slt $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  < Operation");
+                    }
+                    break;
+                case ">":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  > Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("c.gt.s $f0,$f1");
+                        cgen.addCode("li $t2,0");
+                        cgen.addCode("li $t3,1");
+                        cgen.addCode("movt $t2,$t3,$fcc0");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("sgt $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  > Operation");
+                    }
+                    break;
+                case "<=":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  <= Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("c.gt.s $f0,$f1");
+                        cgen.addCode("li $t2,1");
+                        cgen.addCode("li $t3,0");
+                        cgen.addCode("movt $t2,$t3,$fcc0");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("sle $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  <= Operation");
+                    }
+                    break;
+                case ">=":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  >= Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("c.lt.s $f0,$f1");
+                        cgen.addCode("li $t2,1");
+                        cgen.addCode("li $t3,0");
+                        cgen.addCode("movt $t2,$t3,$fcc0");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else if (firstOperand.variableDecl.type == Type.intType) {
+                        cgen.addCode("sge $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  >= Operation");
+                    }
+                    break;
+                case "==":
+                case "!=":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  ==,!= Operation");
+                    } else if (firstOperand.variableDecl.type == Type.doubleType) {
+                        cgen.addCode("mtc1 $t0,$f0");
+                        cgen.addCode("mtc1 $t1,$f1");
+                        cgen.addCode("c.eq.s $f0,$f1");
+                        cgen.addCode("li $t2,0");
+                        cgen.addCode("li $t3,1");
+                        cgen.addCode("movt $t2,$t3,$fcc0");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else if (firstOperand.variableDecl.type == Type.intType ||
+                                firstOperand.variableDecl.type==Type.boolType ||
+                                firstOperand.variableDecl.type instanceof ClassType) { //TODO null type
+                        cgen.addCode("seq $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else if (firstOperand.variableDecl.type == Type.stringType) {
+                        //TODO String
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  ==,!= Operation");
+                    }
+                    if(this.operator.operatorString.equals("!=")){
+                        cgen.addCode("xori $t2,$t2,1");
+                    }
+                    break;
+                case "||":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  || Operation");
+                    } else if (firstOperand.variableDecl.type == Type.boolType) {
+                        cgen.addCode("or $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  || Operation");
+                    }
+                    break;
+                case "&&":
+                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                        System.out.println("ArithmeticExpr ERROR!  && Operation");
+                    } else if (firstOperand.variableDecl.type == Type.boolType) {
+                        cgen.addCode("and $t2,$t0,$t1");
+                        this.variableDecl = new VariableDecl(Type.boolType);
+                    } else {
+                        System.out.println("ArithmeticExpr ERROR!  && Operation");
+                    }
+                    break;
+            }
         }
-        this.variableDecl.location=cgen.stackOffset;
-        cgen.stackOffset-=4;
-        this.variableDecl.varType=VarType.LOCAL;
-        cgen.addCode(String.format("sw $t2,%d($fp)",this.variableDecl.location));
+        this.variableDecl.location = cgen.stackOffset;
+        cgen.stackOffset -= 4;
+        this.variableDecl.varType = VarType.LOCAL;
+        cgen.addCode(String.format("sw $t2,%d($fp)", this.variableDecl.location));
     }
 }
