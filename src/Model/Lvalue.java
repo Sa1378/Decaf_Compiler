@@ -1,4 +1,6 @@
 package Model;
 
-public class Lvalue extends Expr {
+abstract public class Lvalue{
+    VariableDecl variableDecl;
+    abstract void cgen(Cgen cgen);
 }

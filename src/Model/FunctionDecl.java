@@ -26,6 +26,7 @@ public class FunctionDecl extends Decl {
         int ptr = 4 * formals.size();
         for (VariableDecl formal : formals) {
             formal.location = ptr;
+            formal.varType = VarType.PARAMETER;
             ptr -= 4;
             cgen.topScope().put(formal.identifier, formal);
         }

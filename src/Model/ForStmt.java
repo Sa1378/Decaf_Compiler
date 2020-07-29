@@ -17,6 +17,7 @@ public class ForStmt extends Stmt {
     protected void cgen(Cgen cgen) {
         String label1=cgen.newLabel(),label2=cgen.newLabel();
         cgen.addScope();
+        cgen.pushLoop(label2);
         if(initialExpr!=null)
             initialExpr.cgen(cgen);
         cgen.addCode(String.format("%s:",label1));
@@ -28,5 +29,6 @@ public class ForStmt extends Stmt {
             stepExpr.cgen(cgen);
         cgen.addCode(String.format("%s:",label2));
         cgen.popScope();
+        cgen.popLoop();
     }
 }

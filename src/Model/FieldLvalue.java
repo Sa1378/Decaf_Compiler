@@ -8,4 +8,58 @@ public class FieldLvalue extends Lvalue {
         this.expr = expr;
         this.identifier = identifier;
     }
+
+    @Override
+    protected void cgen(Cgen cgen) {
+        if (expr == null){
+            VariableDecl var = cgen.findVar(identifier);
+            if (var == null){
+                System.out.println("Error variable not found");
+                return;
+            }
+            switch (var.varType){
+                case LOCAL:
+                case PARAMETER:
+                    cgen.addCode(String.format("addi $t0,$fp,%d",var.location));
+                    this.variableDecl = new VariableDecl(var.type,null);
+                    this.variableDecl.location = cgen.newLocation();
+                    //this.variableDecl.varType =  TODO pointer type?
+                    cgen.addCode(String.format("sw $t0,%d($fp)",this.variableDecl.location));
+                    return;
+                case GLOBAL:
+                    //TODO
+                    return;
+                case FIELD:
+                    this.expr = new This();
+            }
+        }
+        expr.cgen(cgen);
+        Type type = expr.variableDecl.type;
+        if (!(type instanceof ClassType)){
+            System.out.println("Error wrong type"); //TODO change type system completely
+            return;
+        }
+        Identifier id = ((ClassType) type).identifier;
+        ClassDecl cls = cgen.classTable.get(id);
+        if (cls == null){
+            System.out.println("ERROR class not found");
+            return;
+        }
+        VariableDecl var = null;
+        for (VariableDecl variableDecl:cls.fields){
+            if (variableDecl.identifier.equals(identifier)){
+                var =variableDecl;
+            }
+        }
+        if (var == null){
+            System.out.println("ERROR field not found");
+            return;
+        }
+        this.variableDecl = new VariableDecl(var.type,null);
+        this.variableDecl.location = cgen.newLocation();
+        //TODO set varType
+        cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
+        cgen.addCode(String.format("addi $t0,$t0,%d",var.location));
+        cgen.addCode(String.format("sw $t0,%d($fp)",this.variableDecl.location));
+    }
 }

@@ -6,4 +6,9 @@ public class PrintStmt extends Stmt {
     public PrintStmt(Expr expr) {
         this.expr = expr;
     }
+
+    @Override
+    protected void cgen(Cgen cgen) {
+
+    }
 }

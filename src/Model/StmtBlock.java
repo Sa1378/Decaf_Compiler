@@ -14,7 +14,7 @@ public class StmtBlock extends Stmt{
     public void cgen(Cgen cgen) {
         cgen.addScope();
         for (VariableDecl varDecl: varDecls){
-            varDecl.location = cgen.stackOffset;
+            varDecl.location = cgen.stackOffset; //TODO init variable with null values?
             cgen.stackOffset -= 4;
             cgen.topScope().put(varDecl.identifier,varDecl);
         }

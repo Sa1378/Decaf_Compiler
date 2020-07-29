@@ -9,6 +9,7 @@ public class Cgen {
     HashMap<Identifier, ClassDecl> classTable = new HashMap<>();
     ArrayList<String> data = new ArrayList<>();
     ArrayList<String> code = new ArrayList<>();
+    ArrayList<String> loopLabels;
     int currBytes = 0;
     int stackOffset = -4;
     int labelCnt = 0;
@@ -49,6 +50,34 @@ public class Cgen {
     }
 
     public String newLabel() {
-        return String.format("NiceLabelYouHaveThere%d", labelCnt);
+        return String.format("NiceLabelYouHaveThere%d", labelCnt++);
     }
+
+    public VariableDecl findVar(Identifier identifier) {
+        for (int i = varTable.size() - 1; i >= 0; i--) {
+            if (varTable.get(i).containsKey(identifier)) {
+                return varTable.get(i).get(identifier);
+            }
+        }
+        return null;
+    }
+
+    public int newLocation() {
+        int tmp = stackOffset;
+        stackOffset -= 4;
+        return tmp;
+    }
+
+    public String topLoop(){
+        return loopLabels.get(loopLabels.size()-1);
+    }
+
+    public void popLoop(){
+        loopLabels.remove(loopLabels.size()-1);
+    }
+
+    public void pushLoop(String label){
+        loopLabels.add(label);
+    }
+
 }

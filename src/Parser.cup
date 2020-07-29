@@ -329,13 +329,13 @@ Exprs        ::=    Expr:e {:
                     :};
 
 Expr         ::=    Lvalue:l ASSIGN Expr:e {:
-                        RESULT=new ArithmeticExpr(l,e,new Operator("="));
+                        RESULT=new AssignmentExpr(l,e);
                     :} |
                     Constants:c {:
                         RESULT=c;
                     :} |
                     Lvalue:l {:
-                        RESULT=l;
+                        RESULT=new LvalueExpr(l);
                     :} |
                     THIS {:
                         RESULT=new This();

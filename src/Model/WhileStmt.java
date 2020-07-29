@@ -12,6 +12,7 @@ public class WhileStmt extends Stmt {
     @Override
     protected void cgen(Cgen cgen) {
         String label1=cgen.newLabel(),label2=cgen.newLabel();
+        cgen.pushLoop(label2);
         cgen.addCode(String.format("%s:",label1));
         condition.cgen(cgen);
         cgen.addCode(String.format("lw $t0,%d($fp)", condition.variableDecl.location));
@@ -19,5 +20,6 @@ public class WhileStmt extends Stmt {
         body.cgen(cgen);
         cgen.addCode(String.format("j %s",label1));
         cgen.addCode(String.format("%s:",label2));
+        cgen.popLoop();
     }
 }
