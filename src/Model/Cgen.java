@@ -17,7 +17,7 @@ public class Cgen {
     public Cgen() {
         varTable.add(new HashMap<>());
         funcTable.add(new HashMap<>());
-        addCode(".text", 0);
+        addCode(".text");
         addData(".data");
 
     }
@@ -29,11 +29,6 @@ public class Cgen {
     public void addCode(String s) {
         code.add(s);
         this.currBytes += 4;
-    }
-
-    public void addCode(String s, int bytes) {
-        code.add(s);
-        this.currBytes += bytes;
     }
 
     public void addScope() {
@@ -68,15 +63,15 @@ public class Cgen {
         return tmp;
     }
 
-    public String topLoop(){
-        return loopLabels.get(loopLabels.size()-1);
+    public String topLoop() {
+        return loopLabels.get(loopLabels.size() - 1);
     }
 
-    public void popLoop(){
-        loopLabels.remove(loopLabels.size()-1);
+    public void popLoop() {
+        loopLabels.remove(loopLabels.size() - 1);
     }
 
-    public void pushLoop(String label){
+    public void pushLoop(String label) {
         loopLabels.add(label);
     }
 

@@ -83,4 +83,13 @@ public class ClassDecl extends Decl {
         for (int i = 0; i < methods.size(); i++)
             cgen.addCode(".word" + methods.get(i).location); //TODO
     }
+
+    int methodOffset(Identifier id) {
+        for (int i = 0; i < methods.size(); i++) {
+            if (methods.get(i).identifier.equals(id)) {
+                return 4 * i;
+            }
+        }
+        return 0;
+    }
 }

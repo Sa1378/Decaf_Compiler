@@ -23,20 +23,27 @@ public class FunctionDecl extends Decl {
             formals.add(new VariableDecl(parClass, new Identifier("this")));
         }
         cgen.addScope();
-        int ptr = 4 * formals.size();
+        int ptr = 4 * (formals.size() + 1);
         for (VariableDecl formal : formals) {
             formal.location = ptr;
             formal.varType = VarType.PARAMETER;
             ptr -= 4;
             cgen.topScope().put(formal.identifier, formal);
         }
-        if (parClass != null) {
-            cgen.addCode(String.format("funcLabel_%s: ", parClass.identifier.name + "." + identifier.name));
-        } else {
-            cgen.addCode(String.format("funcLabel_%s: ", identifier.name));
-        }
+        cgen.addCode(String.format("%s: ",getLabel()));
+        cgen.addCode("sw $ra,4($fp)");
         cgen.stackOffset = -4;
-        body.cgen(cgen); //TODO get size
+        body.cgen(cgen);
+        ReturnStmt ret = new ReturnStmt(null);
+        ret.cgen(cgen);
         cgen.popScope();
+    }
+
+    public String getLabel() {
+        if (parClass != null) {
+            return String.format("funcLabel_%s", parClass.identifier.name + "." + identifier.name);
+        } else {
+            return String.format("funcLabel_%s", identifier.name);
+        }
     }
 }
