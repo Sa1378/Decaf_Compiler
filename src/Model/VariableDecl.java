@@ -18,10 +18,6 @@ public class VariableDecl extends Decl {
 
     @Override
     public void cgen(Cgen cgen) {
-        if(true){ //TODO
-            cgen.addCode("ori $v0,$zero,9");
-            cgen.addCode("ori $a0,$zero,4");
-            cgen.addCode("syscall");
-        }
+        //TODO initialize with null?
     }
 }

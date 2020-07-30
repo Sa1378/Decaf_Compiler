@@ -62,7 +62,6 @@ public class FieldLvalue extends Lvalue {
         }
         this.variableDecl = new VariableDecl(var.type, null);
         this.variableDecl.location = cgen.newLocation();
-        //TODO set varType
         cgen.addCode(String.format("lw $t0,%d($fp)", expr.variableDecl.location));
         cgen.addCode(String.format("addi $t0,$t0,%d", var.location));
         cgen.addCode(String.format("sw $t0,%d($fp)", this.variableDecl.location));

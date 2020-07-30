@@ -80,8 +80,7 @@ public class ClassDecl extends Decl {
 
     public void addVtable(Cgen cgen) {
         cgen.addData(classLabel + ":");
-        for (int i = 0; i < methods.size(); i++)
-            cgen.addCode(".word" + methods.get(i).location); //TODO
+        cgen.addData(String.format(".space %d",4 * methods.size()));
     }
 
     int methodOffset(Identifier id) {
@@ -91,5 +90,13 @@ public class ClassDecl extends Decl {
             }
         }
         return 0;
+    }
+    FunctionDecl getMethod(Identifier id){
+        for (int i = 0; i < methods.size(); i++) {
+            if (methods.get(i).identifier.equals(id)) {
+                return methods.get(i);
+            }
+        }
+        return null;
     }
 }

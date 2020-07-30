@@ -22,7 +22,7 @@ public class IfStmt extends Stmt {
     @Override
     protected void cgen(Cgen cgen) {
         condition.cgen(cgen);
-        cgen.addCode(String.format("lw $t0,%d($fp)", condition.variableDecl.location)); //TODO
+        cgen.addCode(String.format("lw $t0,%d($fp)", condition.variableDecl.location));
         String label1 = cgen.newLabel(), label2=null;
         if (elseBody != null)
             label2 = cgen.newLabel();

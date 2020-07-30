@@ -12,7 +12,7 @@ public class LvalueExpr extends Expr {
         lvalue.cgen(cgen);
         this.variableDecl = new VariableDecl(lvalue.variableDecl.type,null);
         this.variableDecl.location = cgen.newLocation();
-        this.variableDecl.varType = VarType.LOCAL; //TODO is three a difference between local and temp and param?
+        this.variableDecl.varType = VarType.LOCAL;
         cgen.addCode(String.format("lw $t0,%d($fp)",lvalue.variableDecl.location));
         cgen.addCode("lw $t1,0($t0)");
         cgen.addCode(String.format("sw $t1,%d($fp)",this.variableDecl.location));
