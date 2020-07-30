@@ -1,0 +1,7 @@
+add to .data
+a label for booleans to print easily BooleanValueLabel
+null value maybe? NullValueLabel?
+new line char for printing newline NewLineLabel
+space char for spaces in print? SpaceCharLabel
+1000 as a float for rounding DoubleRoundingLabel
+0.5 for rounding HalfDoubleLabel
