@@ -13,21 +13,17 @@ public class Cgen {
     int currBytes = 0;
     int stackOffset = -4;
     int labelCnt = 0;
+    int intCnt = 0;
+    int doubleCnt = 0;
+    int stringCnt = 0;
+    int boolCnt = 0;
+    int nullCnt = 0;
 
     public Cgen() {
         varTable.add(new HashMap<>());
         funcTable.add(new HashMap<>());
         addCode(".text");
-        addCode("j InitialLabel");
         addData(".data");
-        addData("BooleanLabel: .space 8");
-        addData("TrueLabel: .asciiz \"true\"");
-        addData("FalseLabel: .asciiz \"false\"");
-        addData("NewLineLabel: .asciiz \"\\n\"");
-        addData("SpaceCharLabel: .asciiz \" \"");
-        addData("DoubleRoundingLabel: .float 10000");
-        addData("HalfDoubleLabel: .float 0.5");
-        //TODO null value
     }
 
     public void addData(String s) {
@@ -41,6 +37,7 @@ public class Cgen {
 
     public void addScope() {
         varTable.add(new HashMap<>());
+
     }
 
     public HashMap<Identifier, VariableDecl> topScope() {
@@ -81,5 +78,24 @@ public class Cgen {
     public void pushLoop(String label) {
         loopLabels.add(label);
     }
+
+    public String intLabel() {
+        return String.format("intLabel%d", intCnt++);
+    }
+
+    public String stringLabel() {
+        return String.format("stringLabel%d", stringCnt++);
+    }
+
+    public String doubleLabel() {
+        return String.format("doubleLabel%d", doubleCnt++);
+    }
+
+    public String boolLabel() {
+        return String.format("boolLabel%d", boolCnt++);
+    }
+
+    public String nullLabel() { return String.format("nullLabel%d", nullCnt++); }
+
 
 }
