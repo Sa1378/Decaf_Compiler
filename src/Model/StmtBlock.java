@@ -1,7 +1,6 @@
 package Model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class StmtBlock extends Stmt{
@@ -10,6 +9,7 @@ public class StmtBlock extends Stmt{
 
     public StmtBlock(ArrayList<VariableDecl> varDecls, ArrayList<Stmt> blocks) {
         this.varDecls = varDecls;
+        Collections.reverse(blocks);
         this.stmts = blocks;
     }
 
@@ -21,8 +21,7 @@ public class StmtBlock extends Stmt{
             cgen.stackOffset -= 4;
             cgen.topScope().put(varDecl.identifier,varDecl);
         }
-        Collections.reverse(stmts);
-        for (Stmt stmt: stmts){
+        for (Stmt stmt:stmts){
             stmt.cgen(cgen);
         }
         cgen.popScope();
