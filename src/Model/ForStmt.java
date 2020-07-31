@@ -27,6 +27,7 @@ public class ForStmt extends Stmt {
         body.cgen(cgen);
         if(stepExpr!=null)
             stepExpr.cgen(cgen);
+        cgen.addCode(String.format("j %s",label1));
         cgen.addCode(String.format("%s:",label2));
         cgen.popScope();
         cgen.popLoop();

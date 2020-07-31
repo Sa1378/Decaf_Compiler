@@ -4,8 +4,8 @@ import java.io.*;
 public class Main {
     public static void main(String[] args) throws IOException {
         try {
-            String inputFile = null;
-            String outputFile = null;
+            String inputFile = "src/tests/t002-io2.d";
+            String outputFile = "src/tests/t002-io2.s";
             if (args != null) {
                 for (int i = 0; i < args.length; i++) {
                     if (args[i].equals("-i")) {
@@ -18,11 +18,12 @@ public class Main {
             }
             File read = null;
             if (inputFile != null) {
-                read = new File("tests/" + inputFile);
+                read = new File(inputFile);
             }
             Writer writer;
             if (outputFile != null) {
-                writer = new FileWriter("out/" + outputFile);
+
+                writer = new FileWriter(outputFile);
             } else {
                 writer = new OutputStreamWriter(System.out);
             }
@@ -31,6 +32,7 @@ public class Main {
             writer.flush();
             writer.close();
         } catch (Exception e) {
+            e.printStackTrace();
             Writer writer;
             String outputFile = null;
             if (args != null) {

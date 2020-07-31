@@ -10,7 +10,12 @@ public class StringConstant extends Constant {
     @Override
     protected void cgen(Cgen cgen) {
         String string ;
-        string = String.format( "%s: .asciiz %s",cgen.stringLabel(), this.value);
+        String label1=cgen.stringLabel();
+        string = String.format( "%s: .asciiz %s",label1, this.value);
         cgen.addData(string);
+        this.variableDecl=new VariableDecl(Type.stringType);
+        this.variableDecl.location=cgen.newLocation();
+        cgen.addCode(String.format("la $t0,%s",label1));
+        cgen.addCode(String.format("sw $t0,%d($fp)",this.variableDecl.location));
     }
 }

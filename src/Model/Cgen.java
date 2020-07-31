@@ -9,7 +9,7 @@ public class Cgen {
     HashMap<Identifier, ClassDecl> classTable = new HashMap<>();
     public ArrayList<String> data = new ArrayList<>();
     public ArrayList<String> code = new ArrayList<>();
-    ArrayList<String> loopLabels;
+    ArrayList<String> loopLabels=new ArrayList<>();
     int currBytes = 0;
     int stackOffset = -4;
     int labelCnt = 0;
@@ -23,7 +23,16 @@ public class Cgen {
         varTable.add(new HashMap<>());
         funcTable.add(new HashMap<>());
         addCode(".text");
+        addCode("j InitialLabel");
         addData(".data");
+        addData("BooleanLabel: .space 8");
+        addData("TrueLabel: .asciiz \"true\"");
+        addData("FalseLabel: .asciiz \"false\"");
+        addData("NewLineLabel: .asciiz \"\\n\"");
+        addData("SpaceCharLabel: .asciiz \" \"");
+        addData("DoubleRoundingLabel: .float 10000");
+        addData("HalfDoubleLabel: .float 0.5");
+        //TODO null value
     }
 
     public void addData(String s) {

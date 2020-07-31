@@ -19,6 +19,8 @@ public class ArithmeticExpr extends Expr {
     @Override
     protected void cgen(Cgen cgen) {
         firstOperand.cgen(cgen);
+        if(secondOperand!=null)
+            secondOperand.cgen(cgen);
         cgen.addCode(String.format("lw $t0,%d($fp)", firstOperand.variableDecl.location));
         if (secondOperand == null) {
             switch (operator.operatorString) {
@@ -49,7 +51,6 @@ public class ArithmeticExpr extends Expr {
 
             }
         } else {
-            secondOperand.cgen(cgen);
             cgen.addCode(String.format("lw $t1,%d($fp)", secondOperand.variableDecl.location));
             switch (operator.operatorString) {
                 case "+":
