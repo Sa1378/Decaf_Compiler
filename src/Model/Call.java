@@ -113,6 +113,7 @@ public class Call extends Expr {
                 variableDecl = new VariableDecl(Type.intType);
                 variableDecl.location = cgen.newLocation();
                 cgen.addCode(String.format("sw $t0,%d($fp)",variableDecl.location));
+                return;
             }
             if (!(expr.variableDecl.type instanceof ClassType)) {
                 System.out.println("Error invalid method call");

@@ -43,6 +43,7 @@ terminal String T_ID, T_STRINGLITERAL;
 terminal String T_INTLITERAL;
 terminal String T_DOUBLELITERAL;
 terminal String T_BOOLEANLITERAL  ;
+terminal UMINUS;
 
 //list of non terminals
 non terminal Initial Initial;
@@ -78,16 +79,16 @@ non terminal ForStmt For_statement_no_short_if;
 
 
 //precedence of operators
-precedence left LEFTPAREN;
-precedence left DOT, OPENBRACKET;
-precedence left EXCLAMATION;
-precedence left MULL, DIV, PERCENT;
-precedence left PLUS, MINUS;
-precedence left LESS, LESSEQUAL, BIGGER, BIGEQUAL;
-precedence left EQUALS, NOTEQUALS;
-precedence left AND;
-precedence left OR;
 precedence left ASSIGN;
+precedence left OR;
+precedence left AND;
+precedence left EQUALS, NOTEQUALS;
+precedence left LESS, LESSEQUAL, BIGGER, BIGEQUAL;
+precedence left PLUS, MINUS;
+precedence left MULL, DIV, PERCENT;
+precedence left EXCLAMATION,UMINUS;
+precedence left DOT, OPENBRACKET;
+precedence left LEFTPAREN;
 
 start with Initial;
 
@@ -374,7 +375,7 @@ Expr         ::=    Lvalue:l ASSIGN Expr:e {:
                     :} |
                     MINUS Expr:x {:
                         RESULT=new ArithmeticExpr(x,new Operator("-"));
-                    :} |
+                    :} %prec UMINUS |
                     Expr:x LESS Expr:y {:
                         RESULT=new ArithmeticExpr(x,y,new Operator("<"));
                     :} |

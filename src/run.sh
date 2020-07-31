@@ -18,12 +18,12 @@ do
     program_input="$filename.in"
     report_filename="$filename.report.txt"
     echo "Running Test $filename -------------------------------------"
-    javac * Main.java
+    javac -cp "java_cup.jar;java_cup_runtime.jar;jflex-full-1.8.2.jar;" Main.java parser.java Sym.java Yylex.java Model/*.java
     if [ $? -eq 1 ]; then
         echo "Code did not Compiler"
     else
         echo "Core compiled successfuly"
-        java main -i $filelist -o $output_asm
+		java -cp "java_cup.jar;java_cup_runtime.jar;jflex-full-1.8.2.jar;" Main -i $filelist -o $output_asm
         if [ $? -eq 0 ]; then
             echo "Code Compiled Successfuly!"
             spim -a -f "$OUTPUT_DIRECTORY$output_asm" < "$TEST_DIRECTORY$program_input" > "$OUTPUT_DIRECTORY$output_filename"
@@ -54,5 +54,3 @@ done
 
 echo "Passed : $NUMBER_OF_PASSED"
 echo "Failed : $NUMBER_OF_FAILED"
-
-sleep 5d
