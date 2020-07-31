@@ -23,7 +23,6 @@ public class ArrayLvalue extends Lvalue {
         }
         this.variableDecl = new VariableDecl(((ArrayType) expr.variableDecl.type).type,null);
         this.variableDecl.location = cgen.newLocation();
-        //TODO varType
         cgen.addCode(String.format("lw $t0,%d($fp",expr.variableDecl.location));
         cgen.addCode(String.format("lw $t1,%d($fp",index.variableDecl.location));
         //TODO runtime out of bounds error

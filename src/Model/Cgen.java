@@ -18,8 +18,14 @@ public class Cgen {
         varTable.add(new HashMap<>());
         funcTable.add(new HashMap<>());
         addCode(".text");
+        addCode("j InitialLabel");
         addData(".data");
-
+        addData("BooleanLabel: .asciiz \"false\" .asciiz \"true\"");
+        addData("NewLineLabel: .asciiz \"\\n\"");
+        addData("SpaceCharLabel: .asciiz \" \"");
+        addData("DoubleRoundingLabel: .float 10000");
+        addData("HalfDoubleLabel: .float 0.5");
+        //TODO null value
     }
 
     public void addData(String s) {
@@ -33,7 +39,6 @@ public class Cgen {
 
     public void addScope() {
         varTable.add(new HashMap<>());
-
     }
 
     public HashMap<Identifier, VariableDecl> topScope() {

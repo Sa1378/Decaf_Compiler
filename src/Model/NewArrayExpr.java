@@ -14,7 +14,7 @@ public class NewArrayExpr extends Expr {
         expr.cgen(cgen);
         this.variableDecl = new VariableDecl(new ArrayType(type),null);
         this.variableDecl.location = cgen.newLocation();
-        this.variableDecl.varType = VarType.LOCAL; //TODO
+        this.variableDecl.varType = VarType.LOCAL;
         cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
         cgen.addCode("addi $a0,$t0,1");
         cgen.addCode("sll $a0,$a0,2");
