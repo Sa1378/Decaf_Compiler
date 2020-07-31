@@ -20,6 +20,7 @@ public class PrintStmt extends Stmt {
         printNewLine(cgen);
     }
     void printExpr(Expr expr,Cgen cgen){
+        expr.cgen(cgen);
         if (expr.variableDecl.type == Type.intType){
             cgen.addCode(String.format("lw $a0,%d($fp)",expr.variableDecl.location));
             cgen.addCode("li $v0,1");
@@ -28,7 +29,9 @@ public class PrintStmt extends Stmt {
         else if (expr.variableDecl.type == Type.boolType){
             cgen.addCode("la $a0,BooleanValueLabel");
             cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
+            cgen.addCode("sll $t0,2");
             cgen.addCode("add $a0,$a0,$t0");
+            cgen.addCode("lw $a0,0($a0)");
             cgen.addCode("li $v0,4");
             cgen.addCode("syscall");
         }

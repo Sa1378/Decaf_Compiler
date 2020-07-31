@@ -20,7 +20,9 @@ public class Cgen {
         addCode(".text");
         addCode("j InitialLabel");
         addData(".data");
-        addData("BooleanLabel: .asciiz \"false\" .asciiz \"true\"");
+        addData("BooleanLabel: .space 8");
+        addData("TrueLabel: .asciiz \"true\"");
+        addData("FalseLabel: .asciiz \"false\"");
         addData("NewLineLabel: .asciiz \"\\n\"");
         addData("SpaceCharLabel: .asciiz \" \"");
         addData("DoubleRoundingLabel: .float 10000");

@@ -41,6 +41,11 @@ public class Initial {
         for (ClassDecl classDecl : classDecls)
             classDecl.addVtable(cgen);
         cgen.addCode("InitialLabel: ");
+        cgen.addCode("la $t0,BooleanLabel");
+        cgen.addCode("la $t1,FalseLabel");
+        cgen.addCode("la $t2,TrueLabel");
+        cgen.addCode("sw $t1,0($t0)");
+        cgen.addCode("sw $t2,4($t0)");
         cgen.addCode("move $s7,$sp"); //TODO move globals to data part?
         cgen.addCode(String.format("addi $fp,$sp,%d", globPtr));
         Stmt s = new Call(null, new Identifier("main"), new ArrayList<>());
