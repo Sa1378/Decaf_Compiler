@@ -7,8 +7,8 @@ public class Cgen {
     ArrayList<HashMap<Identifier, VariableDecl>> varTable = new ArrayList<>();
     ArrayList<HashMap<Identifier, FunctionDecl>> funcTable = new ArrayList<>();
     HashMap<Identifier, ClassDecl> classTable = new HashMap<>();
-    ArrayList<String> data = new ArrayList<>();
-    ArrayList<String> code = new ArrayList<>();
+    public ArrayList<String> data = new ArrayList<>();
+    public ArrayList<String> code = new ArrayList<>();
     ArrayList<String> loopLabels;
     int currBytes = 0;
     int stackOffset = -4;

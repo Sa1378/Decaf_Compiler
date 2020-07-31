@@ -23,8 +23,7 @@ public class Initial {
         }
     }
 
-    public void cgen() {
-        Cgen cgen = new Cgen();
+    public void cgen(Cgen cgen){
         for (VariableDecl variableDecl : varDecls) {
             variableDecl.varType=VarType.GLOBAL;
             cgen.varTable.get(0).put(variableDecl.identifier, variableDecl);
