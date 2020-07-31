@@ -1,6 +1,8 @@
 package Model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 public class StmtBlock extends Stmt{
     ArrayList<VariableDecl> varDecls;
@@ -15,10 +17,12 @@ public class StmtBlock extends Stmt{
         cgen.addScope();
         for (VariableDecl varDecl: varDecls){
             varDecl.location = cgen.stackOffset; //TODO init variable with null values?
+            varDecl.varType = VarType.LOCAL;
             cgen.stackOffset -= 4;
             cgen.topScope().put(varDecl.identifier,varDecl);
         }
-        for (Stmt stmt:stmts){
+        Collections.reverse(stmts);
+        for (Stmt stmt: stmts){
             stmt.cgen(cgen);
         }
         cgen.popScope();
