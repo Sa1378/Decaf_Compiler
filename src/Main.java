@@ -1,6 +1,55 @@
-public class Main {
+import java.io.File;
+import java.io.*;
 
-    public static void main(String[] args) {
-        System.out.println("Hello World!");
+public class Main {
+    public static void main(String[] args) throws IOException {
+        try {
+            String inputFile = null;
+            String outputFile = null;
+            if (args != null) {
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i].equals("-i")) {
+                        inputFile = args[i + 1];
+                    }
+                    if (args[i].equals("-o")) {
+                        outputFile = args[i + 1];
+                    }
+                }
+            }
+            File read = null;
+            if (inputFile != null) {
+                read = new File("tests/" + inputFile);
+            }
+            Writer writer;
+            if (outputFile != null) {
+                writer = new FileWriter("out/" + outputFile);
+            } else {
+                writer = new OutputStreamWriter(System.out);
+            }
+            parser p = new parser(read, writer);
+            p.parse();
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            Writer writer;
+            String outputFile = null;
+            if (args != null) {
+                for (int i = 0; i < args.length; i++) {
+                    if (args[i].equals("-o")) {
+                        outputFile = args[i + 1];
+                    }
+                }
+            }
+            if (outputFile != null) {
+                writer = new FileWriter("out/" + outputFile);
+            } else {
+                writer = new OutputStreamWriter(System.out);
+            }
+
+            writer.write("NO");
+            writer.flush();
+            writer.close();
+        }
     }
+
 }

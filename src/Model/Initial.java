@@ -22,9 +22,7 @@ public class Initial {
             }
         }
     }
-
-    public void cgen() {
-        Cgen cgen = new Cgen();
+    public void cgen(Cgen cgen){
         int globPtr = 0;
         for (VariableDecl variableDecl : varDecls) {
             variableDecl.varType = VarType.GLOBAL;

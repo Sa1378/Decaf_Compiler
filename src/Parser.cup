@@ -5,22 +5,33 @@ import Model.*;
 import java.util.ArrayList;
 
 
-Parser code {:
+parser code {:
     // Connect this Parser to a scanner!
 
                     private Yylex lexer;
                     private File file;
+                    private Writer writer;
+                    public parser(File file, Writer writer ) throws IOException {
+                      this();
+                      this.writer = writer;
+                      this.file = file;
+                      try {
+                        lexer = new Yylex( new FileReader( file ) );
+                      }
+                      catch ( IOException exception ) {
+                        writer.write("NO");
+                      }
+                    }
 
-                    	 public Parser( File file ) {
-                    	 this();
-                    		this.file = file;
-                    		try {
-                    			lexer = new Yylex( new FileReader( file ) );
-                    			}
-                    		catch ( IOException exception ) {
-                    			throw new Error( "No" );
-                    			}
-                    		}
+                    public void writeMips(Cgen cgen) throw IOException{
+                        for(String line : cgen.data){
+                         writer.write(line);
+                        }
+
+                        for(String line : cgen.code){
+                          writer.write(line);
+                           }
+                    }
 
 :}
 
@@ -29,9 +40,9 @@ scan with {: return lexer.yylex(); :};
 //list of terminals
 terminal CLASS, INT, BOOL, DOUBLE, STRING, EXTENDS, VOID, INTERFACE, NULL, THIS, IMPLEMENTS, FOR, WHILE, IF, ELSE, RETURN, BREAK, NEW, NEWARRAY, PRINT, READINTEGER, READLINE, MINUS, PLUS, MULL, DIV, PERCENT, LESS, BIGGER, EXCLAMATION, SEMI, COMMA, DOT, ASSIGN, LEFTPAREN, RIGHTPAREN, OPENBRACKET, CLOSEBRACKET, OPENAC, CLOSEAC, BIGEQUAL, LESSEQUAL, EQUALS, NOTEQUALS, AND, OR, BRACKETS;
 terminal String T_ID, T_STRINGLITERAL;
-terminal Integer T_INTLITERAL;
-terminal Double T_DOUBLELITERAL;
-terminal Boolean T_BOOLEANLITERAL  ;
+terminal String T_INTLITERAL;
+terminal String T_DOUBLELITERAL;
+terminal String T_BOOLEANLITERAL  ;
 
 //list of non terminals
 non terminal Initial Initial;
@@ -46,9 +57,9 @@ non terminal ClassType Pars;
 non terminal Decl Feild;
 non terminal ArrayList<Decl> Fields;
 non terminal StmtBlock StmtBlock;
-non terminal ArrayList<VariableDecls> VarDecls;
+non terminal ArrayList<VariableDecl> VarDecls;
 non terminal ArrayList<Stmt> Stmts;
-non terminal Stmt Stmt;
+non terminal Stmt Stmt , Statement_no_short_if;
 non terminal WhileStmt WhileStmt;
 non terminal ForStmt ForStmt;
 non terminal ReturnStmt ReturnStmt;
@@ -61,7 +72,7 @@ non terminal ArrayList<Expr> Actuals;
 non terminal Constant Constants;
 non terminal ArrayList<Expr> Exprs;
 non terminal Expr ExprOrNot;
-non terminal IfStmt If_then_statement, If_then_else_statement, Statement_no_short_if, If_then_else_statement_no_short_if;
+non terminal IfStmt If_then_statement, If_then_else_statement, If_then_else_statement_no_short_if;
 non terminal WhileStmt While_statement_no_short_if;
 non terminal ForStmt For_statement_no_short_if;
 
@@ -82,9 +93,9 @@ start with Initial;
 
 Initial      ::= Program:p {:
 							Initial initial=new Initial(p);
-                            initial.cgen();
-
-							System.out.println("Yes"); done_parsing(); 
+							Cgen cgen = new Cgen();
+                            initial.cgen(cgen);
+                            parser.writeMips(cgen);
 
 						:};
 
@@ -113,7 +124,7 @@ VariableDecl ::= Variable:v SEMI {:
                     :};
 
 Variable     ::= Type:t T_ID:i {:
-                        RESULT=new VariableDecl(t,new Identifer(i));
+                        RESULT=new VariableDecl(t,new Identifier(i));
                     :};
 
 Type         ::= INT {:
@@ -138,7 +149,7 @@ Type         ::= INT {:
 FunctionDecl ::= Type:t T_ID:i LEFTPAREN Formals:f RIGHTPAREN StmtBlock:s {:
                         RESULT=new FunctionDecl(t,new Identifier(i),f,s);
                     :} |
-                 VOID T_ID LEFTPAREN Formals RIGHTPAREN StmtBlock {:
+                 VOID T_ID:i LEFTPAREN Formals:f RIGHTPAREN StmtBlock:s {:
                         RESULT=new FunctionDecl(Type.voidType,new Identifier(i),f,s);
                     :};
 
@@ -194,10 +205,10 @@ VarDecls        ::= VarDecls:v VariableDecl:x {:
                     RESULT.add(x);
                  :} |
                  {:
-                    RESULT=new Arraylist<VariableDecl>();
+                    RESULT=new ArrayList<VariableDecl>();
                  :};
 
-Stmts        ::=  Stmts:s Stmt:x {:
+Stmts        ::=   Stmt:x Stmts:s{:
                     RESULT=s;
                     RESULT.add(x);
                  :} |
@@ -219,7 +230,7 @@ Stmt         ::= Expr:e SEMI {:
                  :} |
                  If_then_else_statement:s {:
                     RESULT=s;
-                 :}
+                 :} |
                  ForStmt:s {:
                     RESULT=s;
                  :} |
@@ -261,7 +272,7 @@ Statement_no_short_if ::=   Expr:e SEMI {:
                             PrintStmt:s {:
                                 RESULT=s;
                             :} |
-                            StmtBlock {:
+                            StmtBlock:s {:
                                 RESULT=s;
                             :}
                             ;
@@ -347,46 +358,46 @@ Expr         ::=    Lvalue:l ASSIGN Expr:e {:
                         RESULT=e;
                     :} |
                     Expr:x PLUS Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("+");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("+"));
                     :} |
                     Expr:x MINUS Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("-");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("-"));
                     :} |
                     Expr:x MULL Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("*");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("*"));
                     :} |
                     Expr:x DIV Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("/");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("/"));
                     :} |
                     Expr:x PERCENT Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("%");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("%"));
                     :} |
                     MINUS Expr:x {:
                         RESULT=new ArithmeticExpr(x,new Operator("-"));
                     :} |
                     Expr:x LESS Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("<");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("<"));
                     :} |
                     Expr:x LESSEQUAL Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("<=");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("<="));
                     :} |
                     Expr:x BIGGER Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator(">");
+                        RESULT=new ArithmeticExpr(x,y,new Operator(">"));
                     :} |
                     Expr:x BIGEQUAL Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator(">=");
+                        RESULT=new ArithmeticExpr(x,y,new Operator(">="));
                     :} |
                     Expr:x EQUALS Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("==");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("=="));
                     :} |
                     Expr:x NOTEQUALS Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("!=");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("!="));
                     :} |
                     Expr:x AND Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("&&");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("&&"));
                     :} |
                     Expr:x OR Expr:y {:
-                        RESULT=new ArithmeticExpr(x,y,new Operator("||");
+                        RESULT=new ArithmeticExpr(x,y,new Operator("||"));
                     :} |
                     EXCLAMATION Expr:x {:
                         RESULT=new ArithmeticExpr(x,new Operator("!"));
@@ -405,13 +416,13 @@ Expr         ::=    Lvalue:l ASSIGN Expr:e {:
                     :};
 
 Lvalue       ::=    T_ID:i {:
-                        RESULT=new FieldValue(null,new Identifier(i));
+                        RESULT=new FieldLvalue(null,new Identifier(i));
                     :} |
                     Expr:e DOT T_ID:i {:
-                        RESULT=new FieldValue(e,new Identifier(i));
+                        RESULT=new FieldLvalue(e,new Identifier(i));
                     :} |
                     Expr:e OPENBRACKET Expr:x CLOSEBRACKET {:
-                        RESULT=new ArrayValue(e,x);
+                        RESULT=new ArrayLvalue(e,x);
                     :};
 
 Call         ::=    T_ID:i LEFTPAREN Actuals:a RIGHTPAREN {:
