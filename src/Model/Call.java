@@ -62,11 +62,13 @@ public class Call extends Expr {
             cgen.addCode(String.format("lw $t0,%d($fp)", expr1.variableDecl.location));
             cgen.addCode(String.format("sw $t0,%d($fp)", variableDecl.location));
         } else if (expr == null) { //TODO check this actuals
+            for (int i = 0; i < actuals.size(); i++) {
+                actuals.get(i).cgen(cgen);
+            }
             FunctionDecl func = cgen.funcTable.get(0).get(identifier);
             int offset = cgen.stackOffset - 4 * (func.formals.size() + 1);
             cgen.addCode(String.format("sw $fp,%d($fp)", offset));
             for (int i = 0; i < actuals.size(); i++) {
-                actuals.get(i).cgen(cgen);
                 cgen.addCode(String.format("lw $t0,%d($fp)", actuals.get(i).variableDecl.location));
                 cgen.addCode(String.format("sw $t0,%d($fp)", func.formals.get(i).location + offset));
             }
@@ -79,29 +81,6 @@ public class Call extends Expr {
                 cgen.addCode(String.format("sw $v0,%d($fp)", variableDecl.location));
             }
         }
-//        else{ //TODO fix this nad add array.length()
-//            FunctionDecl func = cgen.funcTable.get(1).get(identifier);
-//            ClassDecl cls = cgen.classTable.get(func.parClass.identifier);
-//            int offset = cgen.stackOffset - 4 * (func.formals.size() + 1);
-//            cgen.addCode(String.format("sw $fp,%d($fp)",offset));
-//            actuals.add(expr);
-//            for(int i=0;i<actuals.size();i++){
-//                actuals.get(i).cgen(cgen);
-//                cgen.addCode(String.format("lw $t0,%d($fp)",actuals.get(i).variableDecl.location));
-//                cgen.addCode(String.format("sw $t0,%d($fp)",func.formals.get(i).location + offset));
-//            }
-//            cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
-//            cgen.addCode("lw $t0,0($t0)");
-//            cgen.addCode(String.format("lw $t0,%d($t0)",cls.methodOffset(identifier)));
-//            cgen.addCode(String.format("addi $fp,$fp,%d",offset));
-//            cgen.addCode("jalr $t0");
-//            cgen.addCode("lw $fp,0($fp)");
-//            if(func.type != Type.voidType){
-//                variableDecl = new VariableDecl(func.type);
-//                variableDecl.location = cgen.newLocation();
-//                cgen.addCode(String.format("sw $v0,%d($fp)",variableDecl.location));
-//            }
-//        }
         else { //TODO add array.length()
             actuals.add(expr);
             for (int i = 0; i < actuals.size(); i++) {

@@ -13,9 +13,6 @@ public class PrintStmt extends Stmt {
     protected void cgen(Cgen cgen) {
         for(int i = 0;i<exprs.size();i++){
             printExpr(exprs.get(i),cgen);
-            if (i + 1 < exprs.size()){
-                printSpace(cgen);
-            }
         }
         printNewLine(cgen);
     }

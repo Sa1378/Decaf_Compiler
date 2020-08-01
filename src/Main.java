@@ -22,7 +22,7 @@ public class Main {
             }
             Writer writer;
             if (outputFile != null) {
-                writer = new FileWriter("tests/" + outputFile);
+                writer = new FileWriter("out/" + outputFile);
             } else {
                 writer = new OutputStreamWriter(System.out);
             }

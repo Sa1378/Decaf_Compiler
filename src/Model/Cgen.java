@@ -23,6 +23,7 @@ public class Cgen {
         varTable.add(new HashMap<>());
         funcTable.add(new HashMap<>());
         addCode(".text");
+        addCode("main:");
         addCode("j InitialLabel");
         addData(".data");
         addData("BooleanLabel: .space 8");
@@ -30,7 +31,7 @@ public class Cgen {
         addData("FalseLabel: .asciiz \"false\"");
         addData("NewLineLabel: .asciiz \"\\n\"");
         addData("SpaceCharLabel: .asciiz \" \"");
-        addData("DoubleRoundingLabel: .float 10000");
+        addData("DoubleRoundingLabel: .float 10000.0");
         addData("HalfDoubleLabel: .float 0.5");
         //TODO null value
     }
