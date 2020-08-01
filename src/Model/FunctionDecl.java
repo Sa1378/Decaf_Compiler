@@ -16,18 +16,21 @@ public class FunctionDecl extends Decl {
         this.formals = formals;
         this.body = body;
     }
-
-    @Override
-    public void cgen(Cgen cgen) {
+    void init(){
         if (parClass != null) {
             formals.add(new VariableDecl(parClass, new Identifier("this")));
         }
-        cgen.addScope();
         int ptr = 4 * (formals.size() + 1);
         for (VariableDecl formal : formals) {
             formal.location = ptr;
             formal.varType = VarType.PARAMETER;
             ptr -= 4;
+        }
+    }
+    @Override
+    public void cgen(Cgen cgen) {
+        cgen.addScope();
+        for (VariableDecl formal : formals) {
             cgen.topScope().put(formal.identifier, formal);
         }
         cgen.addCode(String.format("%s: ",getLabel()));

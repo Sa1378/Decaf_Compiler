@@ -22,7 +22,8 @@ public class Initial {
             }
         }
     }
-    public void cgen(Cgen cgen){
+
+    public void cgen(Cgen cgen) {
         int globPtr = 0;
         for (VariableDecl variableDecl : varDecls) {
             variableDecl.varType = VarType.GLOBAL;
@@ -36,6 +37,8 @@ public class Initial {
             cgen.classTable.put(classDecl.identifier, classDecl);
         for (ClassDecl classDecl : classDecls)
             classDecl.addFields(cgen);
+        for (FunctionDecl functionDecl : funcDecls)
+            functionDecl.init();
         for (Decl decl : program)
             decl.cgen(cgen);
         for (ClassDecl classDecl : classDecls)
@@ -48,8 +51,6 @@ public class Initial {
         cgen.addCode("sw $t2,4($t0)");
         cgen.addCode("move $s7,$sp"); //TODO move globals to data part?
         cgen.addCode(String.format("addi $fp,$sp,%d", globPtr));
-        Stmt s = new Call(null, new Identifier("main"), new ArrayList<>());
-        s.cgen(cgen);
         for (ClassDecl classDecl : classDecls) {
             cgen.addCode(String.format("la $t0,%s", classDecl.classLabel));
             for (FunctionDecl method : classDecl.methods) {
@@ -57,6 +58,8 @@ public class Initial {
                 cgen.addCode(String.format("sw $t1,%d($t0)", classDecl.methodOffset(method.identifier)));
             }
         }
+        Stmt s = new Call(null, new Identifier("main"), new ArrayList<>());
+        s.cgen(cgen);
         cgen.addCode("li $v0,10");
         cgen.addCode("syscall");
     }

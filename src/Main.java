@@ -20,6 +20,9 @@ public class Main {
             if (inputFile != null) {
                 read = new File("tests/" + inputFile);
             }
+            else{
+                read = new File("src/tests/t007-class1.d");
+            }
             Writer writer;
             if (outputFile != null) {
                 writer = new FileWriter("out/" + outputFile);
@@ -31,6 +34,7 @@ public class Main {
             writer.flush();
             writer.close();
         } catch (Exception e) {
+            e.printStackTrace();
             Writer writer;
             String outputFile = null;
             if (args != null) {

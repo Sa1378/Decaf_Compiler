@@ -23,12 +23,12 @@ public class ArrayLvalue extends Lvalue {
         }
         this.variableDecl = new VariableDecl(((ArrayType) expr.variableDecl.type).type,null);
         this.variableDecl.location = cgen.newLocation();
-        cgen.addCode(String.format("lw $t0,%d($fp",expr.variableDecl.location));
-        cgen.addCode(String.format("lw $t1,%d($fp",index.variableDecl.location));
+        cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
+        cgen.addCode(String.format("lw $t1,%d($fp)",index.variableDecl.location));
         //TODO runtime out of bounds error
         cgen.addCode("addi $t1,$t1,1");
         cgen.addCode("sll $t1,$t1,2");
         cgen.addCode("add $t2,$t0,$t1");
-        cgen.addCode(String.format("sw $t2,%d($fp",this.variableDecl.location));
+        cgen.addCode(String.format("sw $t2,%d($fp)",this.variableDecl.location));
     }
 }

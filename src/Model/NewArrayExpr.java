@@ -20,7 +20,7 @@ public class NewArrayExpr extends Expr {
         cgen.addCode("sll $a0,$a0,2");
         cgen.addCode("li $v0,9");
         cgen.addCode("syscall");
-        cgen.addCode("sw $t0,0($a0)");
-        cgen.addCode(String.format("sw $a0,%d($fp)",this.variableDecl.location));
+        cgen.addCode("sw $t0,0($v0)");
+        cgen.addCode(String.format("sw $v0,%d($fp)",this.variableDecl.location));
     }
 }

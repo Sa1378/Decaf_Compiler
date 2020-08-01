@@ -20,6 +20,10 @@ public class ClassDecl extends Decl {
                 this.methods.add((FunctionDecl) decl);
             }
         }
+        for (FunctionDecl method:methods){
+            method.parClass = new ClassType(identifier);
+            method.init();
+        }
         classLabel = "ClassVtable_" + identifier.name;
     }
 
@@ -62,7 +66,6 @@ public class ClassDecl extends Decl {
         cgen.addScope();
         for (FunctionDecl method : methods) {
             cgen.funcTable.get(1).put(method.identifier, method);
-            method.parClass = new ClassType(identifier);
         }
         int ptr = 0;
         for (VariableDecl field : fields) {

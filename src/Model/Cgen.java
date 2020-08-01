@@ -9,7 +9,7 @@ public class Cgen {
     HashMap<Identifier, ClassDecl> classTable = new HashMap<>();
     public ArrayList<String> data = new ArrayList<>();
     public ArrayList<String> code = new ArrayList<>();
-    ArrayList<String> loopLabels=new ArrayList<>();
+    ArrayList<String> loopLabels = new ArrayList<>();
     int currBytes = 0;
     int stackOffset = -4;
     int labelCnt = 0;
@@ -33,11 +33,13 @@ public class Cgen {
         addData("SpaceCharLabel: .asciiz \" \"");
         addData("DoubleRoundingLabel: .float 10000.0");
         addData("HalfDoubleLabel: .float 0.5");
-        //TODO null value
+        addData("ReadLineBuffer: .space 4");
+        addData("CarriageReturnLabel: .asciiz \"\\r\"");
     }
 
     public void addData(String s) {
         data.add(s);
+        data.add(".align 2");
     }
 
     public void addCode(String s) {
@@ -105,7 +107,9 @@ public class Cgen {
         return String.format("boolLabel%d", boolCnt++);
     }
 
-    public String nullLabel() { return String.format("nullLabel%d", nullCnt++); }
+    public String nullLabel() {
+        return String.format("nullLabel%d", nullCnt++);
+    }
 
 
 }

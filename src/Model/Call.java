@@ -99,11 +99,12 @@ public class Call extends Expr {
                 return;
             }
             ClassDecl cls = cgen.classTable.get(((ClassType) expr.variableDecl.type).identifier);
+            FunctionDecl func = cls.getMethod(identifier);
             int offset = cgen.stackOffset - 4 * (actuals.size() + 1);
             cgen.addCode(String.format("sw $fp,%d($fp)", offset));
             for (int i = 0; i < actuals.size(); i++) {
                 cgen.addCode(String.format("lw $t0,%d($fp)", actuals.get(i).variableDecl.location));
-                cgen.addCode(String.format("lw $t0,%d($fp)", actuals.get(i).variableDecl.location));
+                cgen.addCode(String.format("sw $t0,%d($fp)", func.formals.get(i).location + offset));
             }
             cgen.addCode(String.format("lw $t0,%d($fp)", expr.variableDecl.location));
             cgen.addCode("lw $t0,0($t0)");
@@ -111,7 +112,6 @@ public class Call extends Expr {
             cgen.addCode(String.format("addi $fp,$fp,%d", offset));
             cgen.addCode("jalr $t0");
             cgen.addCode("lw $fp,0($fp)");
-            FunctionDecl func = cls.getMethod(identifier);
             if (func.type != Type.voidType) {
                 variableDecl = new VariableDecl(func.type);
                 variableDecl.location = cgen.newLocation();
