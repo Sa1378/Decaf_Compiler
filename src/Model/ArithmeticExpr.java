@@ -238,7 +238,20 @@ public class ArithmeticExpr extends Expr {
                         cgen.addCode("seq $t2,$t0,$t1");
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.stringType) {
-                        //TODO String
+                        String label1=cgen.newLabel(),label2=cgen.newLabel(),label3=cgen.newLabel();
+                        cgen.addCode("li $t2,1");
+                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode("lb $t3,0($t0)");
+                        cgen.addCode("lb $t4,0($t1)");
+                        cgen.addCode(String.format("beq $t3,$t4,%s",label2));
+                        cgen.addCode("li $t2,0");
+                        cgen.addCode(String.format("j %s",label3));
+                        cgen.addCode(String.format("%s: ",label2));
+                        cgen.addCode("addi $t0,$t0,1");
+                        cgen.addCode("addi $t1,$t1,1");
+                        cgen.addCode(String.format("bne $t3,$zero,%s",label1));
+                        cgen.addCode(String.format("%s: ",label3));
+                        this.variableDecl=new VariableDecl(Type.boolType);
                     } else {
                         System.out.println("ArithmeticExpr ERROR!  ==,!= Operation");
                     }

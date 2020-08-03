@@ -27,7 +27,7 @@ public class Call extends Expr {
             Expr expr1 = actuals.get(0);
             expr1.cgen(cgen);
             cgen.addCode(String.format("l.s $f0,%d($fp)", expr1.variableDecl.location)); //TODO test fp ops
-            cgen.addCode("cvt.s.w %f0,$f0");
+            cgen.addCode("cvt.s.w $f0,$f0");
             cgen.addCode(String.format("s.s $f0,%d($fp)", variableDecl.location));
         } else if (identifier.name.equals("dtoi")) {
             this.variableDecl = new VariableDecl(Type.intType);
@@ -38,7 +38,7 @@ public class Call extends Expr {
             Expr expr1 = actuals.get(0);
             expr1.cgen(cgen);
             cgen.addCode(String.format("l.s $f0,%d($fp)", expr1.variableDecl.location)); //TODO test fp ops
-            cgen.addCode("cvt.w.s %f0,$f0"); //TODO rounding?
+            cgen.addCode("cvt.w.s $f0,$f0"); //TODO rounding?
             cgen.addCode(String.format("s.s $f0,%d($fp)", variableDecl.location));
         } else if (identifier.name.equals("itob")) {
             this.variableDecl = new VariableDecl(Type.boolType);

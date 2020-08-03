@@ -24,9 +24,9 @@ public class PrintStmt extends Stmt {
             cgen.addCode("syscall");
         }
         else if (expr.variableDecl.type == Type.boolType){
-            cgen.addCode("la $a0,BooleanValueLabel");
+            cgen.addCode("la $a0,BooleanLabel");
             cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
-            cgen.addCode("sll $t0,2");
+            cgen.addCode("sll $t0,$t0,2");
             cgen.addCode("add $a0,$a0,$t0");
             cgen.addCode("lw $a0,0($a0)");
             cgen.addCode("li $v0,4");
@@ -42,7 +42,7 @@ public class PrintStmt extends Stmt {
             cgen.addCode("mtc1 $zero,$f2");
             cgen.addCode("c.lt.s $f1,$f2");
             cgen.addCode(String.format("bc1f %s",label1));
-            cgen.addCode("neg.s $f3");
+            cgen.addCode("neg.s $f3,$f3");
             cgen.addCode(String.format("%s:",label1));
             cgen.addCode("add.s $f1,$f1,$f3");
             cgen.addCode("cvt.w.s $f1,$f1");
