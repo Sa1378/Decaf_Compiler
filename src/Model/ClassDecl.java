@@ -20,7 +20,7 @@ public class ClassDecl extends Decl {
                 this.methods.add((FunctionDecl) decl);
             }
         }
-        for (FunctionDecl method:methods){
+        for (FunctionDecl method : methods) {
             method.parClass = new ClassType(identifier);
             method.init();
         }
@@ -75,7 +75,9 @@ public class ClassDecl extends Decl {
             field.varType = VarType.FIELD;
         }
         for (FunctionDecl method : methods) {
-            method.cgen(cgen);
+            if (method.parClass.identifier.equals(identifier)) {
+                method.cgen(cgen);
+            }
         }
         cgen.popScope();
         cgen.funcTable.remove(1);
@@ -83,7 +85,7 @@ public class ClassDecl extends Decl {
 
     public void addVtable(Cgen cgen) {
         cgen.addData(classLabel + ":");
-        cgen.addData(String.format(".space %d",4 * methods.size()));
+        cgen.addData(String.format(".space %d", 4 * methods.size()));
     }
 
     int methodOffset(Identifier id) {
@@ -94,7 +96,8 @@ public class ClassDecl extends Decl {
         }
         return 0;
     }
-    FunctionDecl getMethod(Identifier id){
+
+    FunctionDecl getMethod(Identifier id) {
         for (int i = 0; i < methods.size(); i++) {
             if (methods.get(i).identifier.equals(id)) {
                 return methods.get(i);
