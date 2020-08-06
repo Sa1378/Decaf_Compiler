@@ -18,6 +18,5 @@ public class VariableDecl extends Decl {
 
     @Override
     public void cgen(Cgen cgen) {
-        //TODO initialize with null?
     }
 }

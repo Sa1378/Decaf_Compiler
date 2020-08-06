@@ -35,6 +35,7 @@ public class Cgen {
         addData("HalfDoubleLabel: .float 0.5");
         addData("ReadLineBuffer: .space 4");
         addData("CarriageReturnLabel: .asciiz \"\\r\"");
+        addData("NullLabel: .space 4");
     }
 
     public void addData(String s) {

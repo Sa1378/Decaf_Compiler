@@ -41,7 +41,7 @@ public class FieldLvalue extends Lvalue {
         expr.cgen(cgen);
         Type type = expr.variableDecl.type;
         if (!(type instanceof ClassType)) {
-            System.out.println("Error wrong type"); //TODO change type system completely
+            System.out.println("Error wrong type");
             return;
         }
         Identifier id = ((ClassType) type).identifier;

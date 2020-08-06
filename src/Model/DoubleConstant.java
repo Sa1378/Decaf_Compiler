@@ -11,7 +11,7 @@ public class DoubleConstant extends Constant {
     protected void cgen(Cgen cgen) {
         String string;
         String label1=cgen.doubleLabel();
-        string = String.format("%s: .float %s", label1, this.value);
+        string = String.format("%s: .float %s", label1, String.format("%f",this.value));
         cgen.addData(string);
         this.variableDecl=new VariableDecl(Type.doubleType);
         this.variableDecl.location=cgen.newLocation();

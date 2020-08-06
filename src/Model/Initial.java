@@ -49,7 +49,9 @@ public class Initial {
         cgen.addCode("la $t2,TrueLabel");
         cgen.addCode("sw $t1,0($t0)");
         cgen.addCode("sw $t2,4($t0)");
-        cgen.addCode("move $s7,$sp"); //TODO move globals to data part?
+        cgen.addCode("la $t0,NullLabel");
+        cgen.addCode("sw $t0,0($t0)");
+        cgen.addCode("move $s7,$sp");
         cgen.addCode(String.format("addi $fp,$sp,%d", globPtr));
         for (ClassDecl classDecl : classDecls) {
             cgen.addCode(String.format("la $t0,%s", classDecl.classLabel));

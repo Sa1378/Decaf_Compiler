@@ -20,7 +20,7 @@ public class NewExpr extends Expr {
         this.variableDecl = new VariableDecl(type,null);
         this.variableDecl.varType = VarType.LOCAL;
         this.variableDecl.location = cgen.newLocation();
-        cgen.addCode(String.format("la $t0,%s",cls.classLabel)); //TODO initialize with nulls?
+        cgen.addCode(String.format("la $t0,%s",cls.classLabel));
         cgen.addCode("sw $t0,0($v0)");
         cgen.addCode(String.format("sw $v0,%d($fp)",variableDecl.location));
     }

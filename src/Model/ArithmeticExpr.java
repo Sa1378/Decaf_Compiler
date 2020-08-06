@@ -19,7 +19,7 @@ public class ArithmeticExpr extends Expr {
     @Override
     protected void cgen(Cgen cgen) {
         firstOperand.cgen(cgen);
-        if(secondOperand!=null)
+        if (secondOperand != null)
             secondOperand.cgen(cgen);
         cgen.addCode(String.format("lw $t0,%d($fp)", firstOperand.variableDecl.location));
         if (secondOperand == null) {
@@ -142,14 +142,14 @@ public class ArithmeticExpr extends Expr {
                     if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
                         System.out.println("ArithmeticExpr ERROR!  < Operation");
                     } else if (firstOperand.variableDecl.type == Type.doubleType) {
-                        String label1=cgen.newLabel();
+                        String label1 = cgen.newLabel();
                         cgen.addCode("mtc1 $t0,$f0");
                         cgen.addCode("mtc1 $t1,$f1");
                         cgen.addCode("c.lt.s $f0,$f1");
                         cgen.addCode("li $t2,1");
-                        cgen.addCode(String.format("bc1t %s",label1));
+                        cgen.addCode(String.format("bc1t %s", label1));
                         cgen.addCode("li $t2,0");
-                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode(String.format("%s: ", label1));
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.intType) {
                         cgen.addCode("slt $t2,$t0,$t1");
@@ -162,14 +162,14 @@ public class ArithmeticExpr extends Expr {
                     if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
                         System.out.println("ArithmeticExpr ERROR!  > Operation");
                     } else if (firstOperand.variableDecl.type == Type.doubleType) {
-                        String label1=cgen.newLabel();
+                        String label1 = cgen.newLabel();
                         cgen.addCode("mtc1 $t0,$f0");
                         cgen.addCode("mtc1 $t1,$f1");
-                        cgen.addCode("c.gt.s $f0,$f1");
-                        cgen.addCode("li $t2,1");
-                        cgen.addCode(String.format("bc1t %s",label1));
+                        cgen.addCode("c.le.s $f0,$f1");
                         cgen.addCode("li $t2,0");
-                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode(String.format("bc1t %s", label1));
+                        cgen.addCode("li $t2,1");
+                        cgen.addCode(String.format("%s: ", label1));
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.intType) {
                         cgen.addCode("sgt $t2,$t0,$t1");
@@ -182,14 +182,14 @@ public class ArithmeticExpr extends Expr {
                     if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
                         System.out.println("ArithmeticExpr ERROR!  <= Operation");
                     } else if (firstOperand.variableDecl.type == Type.doubleType) {
-                        String label1=cgen.newLabel();
+                        String label1 = cgen.newLabel();
                         cgen.addCode("mtc1 $t0,$f0");
                         cgen.addCode("mtc1 $t1,$f1");
-                        cgen.addCode("c.gt.s $f0,$f1");
-                        cgen.addCode("li $t2,0");
-                        cgen.addCode(String.format("bc1t %s",label1));
+                        cgen.addCode("c.le.s $f0,$f1");
                         cgen.addCode("li $t2,1");
-                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode(String.format("bc1t %s", label1));
+                        cgen.addCode("li $t2,0");
+                        cgen.addCode(String.format("%s: ", label1));
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.intType) {
                         cgen.addCode("sle $t2,$t0,$t1");
@@ -202,14 +202,14 @@ public class ArithmeticExpr extends Expr {
                     if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
                         System.out.println("ArithmeticExpr ERROR!  >= Operation");
                     } else if (firstOperand.variableDecl.type == Type.doubleType) {
-                        String label1=cgen.newLabel();
+                        String label1 = cgen.newLabel();
                         cgen.addCode("mtc1 $t0,$f0");
                         cgen.addCode("mtc1 $t1,$f1");
                         cgen.addCode("c.lt.s $f0,$f1");
                         cgen.addCode("li $t2,0");
-                        cgen.addCode(String.format("bc1t %s",label1));
+                        cgen.addCode(String.format("bc1t %s", label1));
                         cgen.addCode("li $t2,1");
-                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode(String.format("%s: ", label1));
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.intType) {
                         cgen.addCode("sge $t2,$t0,$t1");
@@ -220,42 +220,47 @@ public class ArithmeticExpr extends Expr {
                     break;
                 case "==":
                 case "!=":
-                    if (firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
+                    if (!(firstOperand.variableDecl.type instanceof ClassType) &&
+                            !(firstOperand.variableDecl.type instanceof ArrayType) &&
+                            firstOperand.variableDecl.type != secondOperand.variableDecl.type) {
                         System.out.println("ArithmeticExpr ERROR!  ==,!= Operation");
                     } else if (firstOperand.variableDecl.type == Type.doubleType) {
-                        String label1=cgen.newLabel();
+                        String label1 = cgen.newLabel();
                         cgen.addCode("mtc1 $t0,$f0");
                         cgen.addCode("mtc1 $t1,$f1");
                         cgen.addCode("c.eq.s $f0,$f1");
                         cgen.addCode("li $t2,1");
-                        cgen.addCode(String.format("bc1t %s",label1));
+                        cgen.addCode(String.format("bc1t %s", label1));
                         cgen.addCode("li $t2,0");
-                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode(String.format("%s: ", label1));
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.intType ||
-                                firstOperand.variableDecl.type==Type.boolType ||
-                                firstOperand.variableDecl.type instanceof ClassType) { //TODO null type
+                            firstOperand.variableDecl.type == Type.boolType ||
+                            firstOperand.variableDecl.type instanceof ClassType ||
+                            firstOperand.variableDecl.type instanceof ArrayType ||
+                            firstOperand.variableDecl.type == Type.nullType
+                    ) {
                         cgen.addCode("seq $t2,$t0,$t1");
                         this.variableDecl = new VariableDecl(Type.boolType);
                     } else if (firstOperand.variableDecl.type == Type.stringType) {
-                        String label1=cgen.newLabel(),label2=cgen.newLabel(),label3=cgen.newLabel();
+                        String label1 = cgen.newLabel(), label2 = cgen.newLabel(), label3 = cgen.newLabel();
                         cgen.addCode("li $t2,1");
-                        cgen.addCode(String.format("%s: ",label1));
+                        cgen.addCode(String.format("%s: ", label1));
                         cgen.addCode("lb $t3,0($t0)");
                         cgen.addCode("lb $t4,0($t1)");
-                        cgen.addCode(String.format("beq $t3,$t4,%s",label2));
+                        cgen.addCode(String.format("beq $t3,$t4,%s", label2));
                         cgen.addCode("li $t2,0");
-                        cgen.addCode(String.format("j %s",label3));
-                        cgen.addCode(String.format("%s: ",label2));
+                        cgen.addCode(String.format("j %s", label3));
+                        cgen.addCode(String.format("%s: ", label2));
                         cgen.addCode("addi $t0,$t0,1");
                         cgen.addCode("addi $t1,$t1,1");
-                        cgen.addCode(String.format("bne $t3,$zero,%s",label1));
-                        cgen.addCode(String.format("%s: ",label3));
-                        this.variableDecl=new VariableDecl(Type.boolType);
+                        cgen.addCode(String.format("bne $t3,$zero,%s", label1));
+                        cgen.addCode(String.format("%s: ", label3));
+                        this.variableDecl = new VariableDecl(Type.boolType);
                     } else {
                         System.out.println("ArithmeticExpr ERROR!  ==,!= Operation");
                     }
-                    if(this.operator.operatorString.equals("!=")){
+                    if (this.operator.operatorString.equals("!=")) {
                         cgen.addCode("xori $t2,$t2,1");
                     }
                     break;

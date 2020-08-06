@@ -35,7 +35,7 @@ public class ClassDecl extends Decl {
         parDecl.addFields(cgen);
 
         ArrayList<VariableDecl> newFields = parDecl.fields;
-        ArrayList<FunctionDecl> newMethods = parDecl.methods;
+        ArrayList<FunctionDecl> newMethods = new ArrayList<>(parDecl.methods);
 
         for (VariableDecl variableDecl : fields) {
             boolean exists = false;

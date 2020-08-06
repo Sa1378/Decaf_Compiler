@@ -15,7 +15,7 @@ public class Call extends Expr {
 
     @Override
     protected void cgen(Cgen cgen) {
-        if (cgen.funcTable.size() > 1 && cgen.funcTable.get(1).containsKey(identifier)) {
+        if (cgen.funcTable.size() > 1 && expr == null && cgen.funcTable.get(1).containsKey(identifier)) {
             expr = new This();
         }
         if (identifier.name.equals("itod")) {
@@ -26,7 +26,7 @@ public class Call extends Expr {
             }
             Expr expr1 = actuals.get(0);
             expr1.cgen(cgen);
-            cgen.addCode(String.format("l.s $f0,%d($fp)", expr1.variableDecl.location)); //TODO test fp ops
+            cgen.addCode(String.format("l.s $f0,%d($fp)", expr1.variableDecl.location));
             cgen.addCode("cvt.s.w $f0,$f0");
             cgen.addCode(String.format("s.s $f0,%d($fp)", variableDecl.location));
         } else if (identifier.name.equals("dtoi")) {
@@ -37,9 +37,17 @@ public class Call extends Expr {
             }
             Expr expr1 = actuals.get(0);
             expr1.cgen(cgen);
-            cgen.addCode(String.format("l.s $f0,%d($fp)", expr1.variableDecl.location)); //TODO test fp ops
-            cgen.addCode("cvt.w.s $f0,$f0"); //TODO rounding?
-            cgen.addCode(String.format("s.s $f0,%d($fp)", variableDecl.location));
+            String label1 = cgen.newLabel();
+            cgen.addCode(String.format("l.s $f1,%d($fp)", expr1.variableDecl.location));
+            cgen.addCode("l.s $f3,HalfDoubleLabel");
+            cgen.addCode("mtc1 $zero,$f2");
+            cgen.addCode("c.lt.s $f1,$f2");
+            cgen.addCode(String.format("bc1f %s",label1));
+            cgen.addCode("neg.s $f3,$f3");
+            cgen.addCode(String.format("%s:",label1));
+            cgen.addCode("add.s $f1,$f1,$f3");
+            cgen.addCode("cvt.w.s $f1,$f1");
+            cgen.addCode(String.format("s.s $f1,%d($fp)", variableDecl.location));
         } else if (identifier.name.equals("itob")) {
             this.variableDecl = new VariableDecl(Type.boolType);
             this.variableDecl.location = cgen.newLocation();
@@ -61,7 +69,7 @@ public class Call extends Expr {
             expr1.cgen(cgen);
             cgen.addCode(String.format("lw $t0,%d($fp)", expr1.variableDecl.location));
             cgen.addCode(String.format("sw $t0,%d($fp)", variableDecl.location));
-        } else if (expr == null) { //TODO check this actuals
+        } else if (expr == null) {
             for (int i = 0; i < actuals.size(); i++) {
                 actuals.get(i).cgen(cgen);
             }
@@ -81,7 +89,7 @@ public class Call extends Expr {
                 cgen.addCode(String.format("sw $v0,%d($fp)", variableDecl.location));
             }
         }
-        else { //TODO add array.length()
+        else {
             actuals.add(expr);
             for (int i = 0; i < actuals.size(); i++) {
                 actuals.get(i).cgen(cgen);
