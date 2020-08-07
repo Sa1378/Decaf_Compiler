@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.*;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws IOException {
@@ -19,6 +20,10 @@ public class Main {
             File read = null;
             if (inputFile != null) {
                 read = new File("tests/" + inputFile);
+            }
+            else{
+                Scanner inp = new Scanner(System.in);
+                read = new File("tests/" + inp.next());
             }
             Writer writer;
             if (outputFile != null) {

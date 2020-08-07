@@ -15,7 +15,9 @@ public class Call extends Expr {
 
     @Override
     protected void cgen(Cgen cgen) {
-        if (cgen.funcTable.size() > 1 && expr == null && cgen.funcTable.get(1).containsKey(identifier)) {
+        if (cgen.funcTable.size() > 1 && expr == null &&
+                cgen.funcTable.get(1).containsKey(identifier) &&
+                cgen.funcTable.get(1).get(identifier).formals.size() == actuals.size()) {
             expr = new This();
         }
         if (identifier.name.equals("itod")) {
@@ -42,9 +44,9 @@ public class Call extends Expr {
             cgen.addCode("l.s $f3,HalfDoubleLabel");
             cgen.addCode("mtc1 $zero,$f2");
             cgen.addCode("c.lt.s $f1,$f2");
-            cgen.addCode(String.format("bc1f %s",label1));
+            cgen.addCode(String.format("bc1f %s", label1));
             cgen.addCode("neg.s $f3,$f3");
-            cgen.addCode(String.format("%s:",label1));
+            cgen.addCode(String.format("%s:", label1));
             cgen.addCode("add.s $f1,$f1,$f3");
             cgen.addCode("cvt.w.s $f1,$f1");
             cgen.addCode(String.format("s.s $f1,%d($fp)", variableDecl.location));
@@ -88,18 +90,17 @@ public class Call extends Expr {
                 variableDecl.location = cgen.newLocation();
                 cgen.addCode(String.format("sw $v0,%d($fp)", variableDecl.location));
             }
-        }
-        else {
+        } else {
             actuals.add(expr);
             for (int i = 0; i < actuals.size(); i++) {
                 actuals.get(i).cgen(cgen);
             }
-            if(expr.variableDecl.type instanceof  ArrayType && identifier.name.equals("length") && actuals.size() == 1){
-                cgen.addCode(String.format("lw $t0,%d($fp)",expr.variableDecl.location));
+            if (expr.variableDecl.type instanceof ArrayType && identifier.name.equals("length") && actuals.size() == 1) {
+                cgen.addCode(String.format("lw $t0,%d($fp)", expr.variableDecl.location));
                 cgen.addCode("lw $t0,0($t0)");
                 variableDecl = new VariableDecl(Type.intType);
                 variableDecl.location = cgen.newLocation();
-                cgen.addCode(String.format("sw $t0,%d($fp)",variableDecl.location));
+                cgen.addCode(String.format("sw $t0,%d($fp)", variableDecl.location));
                 return;
             }
             if (!(expr.variableDecl.type instanceof ClassType)) {
