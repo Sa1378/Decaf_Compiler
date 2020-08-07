@@ -51,6 +51,19 @@ public class Initial {
         cgen.addCode("sw $t2,4($t0)");
         cgen.addCode("la $t0,NullLabel");
         cgen.addCode("sw $t0,0($t0)");
+        cgen.addCode("la $t0,DigitMapLabel");
+        for (int i = 0; i < 10; i++) {
+            cgen.addCode(String.format("li $t1,%d",i));
+            cgen.addCode(String.format("sb $t1,%d($t0)",'0' + i));
+        }
+        for (int i = 'A';i<'G';i++){
+            cgen.addCode(String.format("li $t1,%d",i - 'A' + 10));
+            cgen.addCode(String.format("sb $t1,%d($t0)",i));
+        }
+        for (int i = 'a';i<'g';i++){
+            cgen.addCode(String.format("li $t1,%d",i - 'a' + 10));
+            cgen.addCode(String.format("sb $t1,%d($t0)",i));
+        }
         cgen.addCode("move $s7,$sp");
         cgen.addCode(String.format("addi $fp,$sp,%d", globPtr));
         for (ClassDecl classDecl : classDecls) {

@@ -15,10 +15,10 @@ public class ReadLineExpr extends Expr {
         cgen.addCode("syscall");
         cgen.addCode("lb $t0,ReadLineBuffer");
         cgen.addCode("sb $t0,0($sp)");
-        cgen.addCode("lb $t1,CarriageReturnLabel");
+        cgen.addCode("li $t1,13");
         cgen.addCode("sne $t2,$t0,$t1");
         cgen.addCode("sub $sp,$sp,$t2");
-        cgen.addCode("lb $t1,NewLineLabel");
+        cgen.addCode("li $t1,10");
         cgen.addCode(String.format("bne $t1,$t0,%s",label1));
         cgen.addCode("lb $t1,NewLineLabel");
         cgen.addCode(String.format("bne $t0,$t1,%s",label1));

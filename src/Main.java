@@ -20,14 +20,11 @@ public class Main {
             if (inputFile != null) {
                 read = new File("tests/" + inputFile);
             }
-            else{
-                read = new File("src/tests/compare.d");
-            }
             Writer writer;
             if (outputFile != null) {
                 writer = new FileWriter("out/" + outputFile);
             } else {
-                writer = new FileWriter("src/out/test.s");
+                writer = new FileWriter("out/test.s");
             }
             parser p = new parser(read, writer);
             p.parse();
