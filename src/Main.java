@@ -23,7 +23,7 @@ public class Main {
             }
             else{
                 Scanner inp = new Scanner(System.in);
-                read = new File("tests/" + inp.next());
+                read = new File("src/tests/" + inp.next());
             }
             Writer writer;
             if (outputFile != null) {

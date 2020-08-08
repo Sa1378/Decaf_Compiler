@@ -16,8 +16,7 @@ public class Call extends Expr {
     @Override
     protected void cgen(Cgen cgen) {
         if (cgen.funcTable.size() > 1 && expr == null &&
-                cgen.funcTable.get(1).containsKey(identifier) &&
-                cgen.funcTable.get(1).get(identifier).formals.size() == actuals.size()) {
+                cgen.funcTable.get(1).containsKey(identifier)) {
             expr = new This();
         }
         if (identifier.name.equals("itod")) {
