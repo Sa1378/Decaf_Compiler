@@ -1,17 +1,17 @@
 package Model;
 
 public class DoubleConstant extends Constant {
-    String value;
+    double value;
 
     public DoubleConstant(String value) {
-        this.value = value;
+        this.value = Double.parseDouble(value);
     }
 
     @Override
     protected void cgen(Cgen cgen) {
         String string;
         String label1=cgen.doubleLabel();
-        string = String.format("%s: .float %s", label1, this.value);
+        string = String.format("%s: .float %f", label1, this.value);
         cgen.addData(string);
         this.variableDecl=new VariableDecl(Type.doubleType);
         this.variableDecl.location=cgen.newLocation();
